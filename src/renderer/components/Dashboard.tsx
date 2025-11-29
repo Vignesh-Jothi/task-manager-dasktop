@@ -12,14 +12,21 @@ import { Button } from "./ui/button";
 
 interface DashboardProps {
   tasks: Task[];
+  loading: boolean;
   onTaskUpdate: () => void;
+  onCreateTask?: () => void; // optional callback to switch view
 }
 
 type ViewMode = "today" | "week" | "month" | "queue";
 type FilterStatus = "all" | "pending" | "in_progress" | "completed" | "missed";
 type FilterPriority = "all" | "low" | "high" | "higher";
 
-const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
+const Dashboard: React.FC<DashboardProps> = ({
+  tasks,
+  loading,
+  onTaskUpdate,
+  onCreateTask,
+}) => {
   const [viewMode, setViewMode] = useState<ViewMode>("today");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [filterPriority, setFilterPriority] = useState<FilterPriority>("all");
@@ -87,10 +94,9 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
     missed: tasks.filter((t) => t.status === "missed").length,
   };
 
-  if (tasks.length === 0 && filteredTasks.length === 0) {
-    // Provide skeleton set for initial load fallback
+  if (loading) {
     return (
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in" aria-busy="true">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
             <div
@@ -107,6 +113,29 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
         <div className="h-64 rounded-lg bg-[var(--bg-card)] relative overflow-hidden skeleton">
           <div className="absolute inset-0 shimmer" />
         </div>
+      </div>
+    );
+  }
+
+  if (!loading && tasks.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full py-16 text-center animate-fade-in">
+        <div className="w-40 h-40 rounded-full bg-[var(--bg-card)] flex items-center justify-center shadow-inner mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 shimmer" />
+          <span className="text-5xl">📝</span>
+        </div>
+        <h2 className="text-2xl font-semibold text-[color:var(--text-primary)] mb-3">
+          No tasks yet
+        </h2>
+        <p className="text-[color:var(--text-secondary)] max-w-md mb-6">
+          Start by creating your first task. Organize your day, set priorities,
+          and track progress effortlessly.
+        </p>
+        {onCreateTask && (
+          <Button onClick={onCreateTask} className="px-6 py-3">
+            ➕ Create Task
+          </Button>
+        )}
       </div>
     );
   }

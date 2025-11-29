@@ -183,7 +183,12 @@ const App: React.FC = () => {
           ) : (
             <div className="animate-fade-in">
               {currentView === "dashboard" && (
-                <Dashboard tasks={tasks} onTaskUpdate={handleTaskUpdate} />
+                <Dashboard
+                  tasks={tasks}
+                  loading={loading}
+                  onTaskUpdate={handleTaskUpdate}
+                  onCreateTask={() => setCurrentView("create")}
+                />
               )}
               {currentView === "create" && (
                 <TaskForm onTaskCreated={handleTaskCreated} />
