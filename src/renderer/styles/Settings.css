@@ -1,0 +1,150 @@
+.settings-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.settings-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.settings-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.settings-tabs button {
+  flex: 1;
+  padding: 1rem;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-tabs button:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.settings-tabs button.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.settings-panel {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.settings-panel h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.settings-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f0f2ff;
+  border-radius: 5px;
+}
+
+.settings-panel .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-panel .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.settings-panel .form-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.settings-panel .form-group input,
+.settings-panel .form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.settings-panel .form-group input:focus,
+.settings-panel .form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.settings-panel .form-group small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.settings-actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.settings-actions button {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-actions button:not(.secondary):not(:disabled) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.settings-actions button.secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.settings-actions button.secondary:hover:not(:disabled) {
+  background: #f0f2ff;
+}
+
+.settings-actions button.primary {
+  background: #4caf50;
+  color: white;
+}
+
+.settings-actions button.primary:hover:not(:disabled) {
+  background: #388e3c;
+}
+
+.settings-actions button:not(.secondary):not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}

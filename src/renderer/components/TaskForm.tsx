@@ -1,0 +1,143 @@
+import React, { useState } from "react";
+import { Priority, TaskType } from "../../types";
+import "../styles/TaskForm.css";
+
+interface TaskFormProps {
+  onTaskCreated: () => void;
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<Priority>("low");
+  const [type, setType] = useState<TaskType>("daily");
+  const [deadline, setDeadline] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!title.trim() || !description.trim()) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await window.api.createTask(
+        title,
+        description,
+        priority,
+        type,
+        deadline || undefined
+      );
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setPriority("low");
+      setType("daily");
+      setDeadline("");
+
+      onTaskCreated();
+    } catch (error) {
+      console.error("Failed to create task:", error);
+      alert("Failed to create task");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="task-form-container">
+      <h2>Create New Task</h2>
+      <form onSubmit={handleSubmit} className="task-form">
+        <div className="form-group">
+          <label htmlFor="title">Title *</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter task title"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="description">Description *</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter task description"
+            rows={5}
+            required
+          />
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="priority">Priority</label>
+            <select
+              id="priority"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as Priority)}
+            >
+              <option value="low">Low</option>
+              <option value="high">High</option>
+              <option value="higher">Higher</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="type">Type</label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value as TaskType)}
+            >
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="deadline">Deadline-based</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="deadline">Deadline (optional)</label>
+          <input
+            type="datetime-local"
+            id="deadline"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={isSubmitting} className="submit-btn">
+            {isSubmitting ? "Creating..." : "Create Task"}
+          </button>
+        </div>
+      </form>
+
+      <div className="keyboard-shortcuts">
+        <h3>Keyboard Shortcuts</h3>
+        <ul>
+          <li>
+            <kbd>Ctrl/Cmd + N</kbd> - Create new task
+          </li>
+          <li>
+            <kbd>Ctrl/Cmd + S</kbd> - Save task
+          </li>
+          <li>
+            <kbd>Esc</kbd> - Cancel
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default TaskForm;

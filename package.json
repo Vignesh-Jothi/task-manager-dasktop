@@ -1,0 +1,81 @@
+{
+  "name": "task-manager",
+  "version": "1.0.0",
+  "description": "Local-first task management application with priority queue and smart notifications",
+  "main": "dist/main/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev:main": "tsc -p tsconfig.main.json -w",
+    "dev:renderer": "vite",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "gen:icons": "node scripts/generate-icons.js",
+    "package": "npm run build && npm run gen:icons && electron-builder",
+    "dist": "npm run package",
+    "app": "npm run build && electron ."
+  },
+  "keywords": [
+    "task-manager",
+    "local-first",
+    "priority-queue",
+    "offline"
+  ],
+  "author": "Task Manager",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "@types/node-cron": "^3.0.11",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "electron": "^39.2.4",
+    "electron-builder": "^24.9.1",
+    "png-to-ico": "^2.1.4",
+    "sharp": "^0.33.5",
+    "typescript": "^5.3.3",
+    "vite": "^6.4.1"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "axios": "^1.6.2",
+    "node-cron": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^9.0.1"
+  },
+  "build": {
+    "appId": "com.taskmanager.app",
+    "productName": "TaskManager",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      "icons/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets",
+        "filter": ["icon.svg"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "icons/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icons/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "icons/icon.png"
+    }
+  }
+}
