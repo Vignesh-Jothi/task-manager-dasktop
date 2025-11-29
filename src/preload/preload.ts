@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld("api", {
   getNextTask: () => ipcRenderer.invoke("task:getNextTask"),
 
   searchTasks: (query: string) => ipcRenderer.invoke("task:search", query),
+  deleteTask: (taskId: string) => ipcRenderer.invoke("task:delete", taskId),
 
   // Logger operations
   getLogs: (date: string) => ipcRenderer.invoke("logger:getLogs", date),

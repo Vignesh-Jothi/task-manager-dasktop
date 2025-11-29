@@ -24,6 +24,7 @@ declare global {
       getPriorityQueue: () => Promise<any[]>;
       getNextTask: () => Promise<any>;
       searchTasks: (query: string) => Promise<any[]>;
+      deleteTask: (taskId: string) => Promise<boolean>;
 
       // Logger operations
       getLogs: (date: string) => Promise<string[]>;

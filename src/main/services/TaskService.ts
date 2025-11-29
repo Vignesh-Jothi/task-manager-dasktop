@@ -208,4 +208,27 @@ export class TaskService {
       return deadline < now;
     });
   }
+
+  deleteTask(taskId: string): boolean {
+    const index = this.fileSystemService.loadIndex();
+    const task = index.tasks[taskId];
+
+    if (!task) {
+      return false;
+    }
+
+    // Remove from index
+    delete index.tasks[taskId];
+    this.fileSystemService.saveIndex(index);
+
+    // Log the action
+    this.loggerService.log({
+      timestamp: new Date().toISOString(),
+      taskId,
+      action: "deleted",
+      previousValue: task,
+    });
+
+    return true;
+  }
 }

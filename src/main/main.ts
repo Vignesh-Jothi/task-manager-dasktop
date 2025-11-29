@@ -73,8 +73,16 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   console.log("[Main] App ready. Initializing services and window...");
+
+  // Request notification permissions on macOS
+  if (process.platform === "darwin") {
+    const { systemPreferences } = require("electron");
+    const status = systemPreferences.getMediaAccessStatus("screen");
+    console.log("[Main] Notification permission status:", status);
+  }
+
   // Initialize services
   fileSystemService.initialize();
   loggerService.initialize();

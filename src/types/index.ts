@@ -19,7 +19,7 @@ export interface Task {
 export interface TaskLog {
   timestamp: string;
   taskId: string;
-  action: "created" | "updated" | "completed" | "missed";
+  action: "created" | "updated" | "completed" | "missed" | "deleted";
   previousValue?: Partial<Task>;
   newValue?: Partial<Task>;
 }

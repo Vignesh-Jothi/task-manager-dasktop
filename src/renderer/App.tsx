@@ -15,6 +15,19 @@ const App: React.FC = () => {
   useEffect(() => {
     loadTasks();
 
+    // Request notification permissions
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        console.log("Notification permission:", permission);
+        if (permission === "granted") {
+          new Notification("🎉 Notifications Enabled!", {
+            body: "You will now receive task reminders and updates.",
+            icon: "/assets/icon.svg",
+          });
+        }
+      });
+    }
+
     // Listen for notifications
     if (window.api) {
       window.api.onNotification((notification) => {

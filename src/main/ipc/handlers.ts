@@ -143,6 +143,13 @@ export function setupIpcHandlers(services: Services): void {
     }
   );
 
+  ipcMain.handle(
+    "task:delete",
+    async (_event: IpcMainInvokeEvent, taskId: string) => {
+      return taskService.deleteTask(taskId);
+    }
+  );
+
   // Logger operations
   ipcMain.handle(
     "logger:getLogs",
