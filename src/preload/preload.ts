@@ -75,6 +75,9 @@ contextBridge.exposeInMainWorld("api", {
 
   testGitHubConnection: () => ipcRenderer.invoke("github:testConnection"),
 
+  // App operations
+  relaunchApp: () => ipcRenderer.invoke("app:relaunch"),
+
   // Notification listener
   onNotification: (
     callback: (notification: { title: string; body: string }) => void

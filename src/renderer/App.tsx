@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from "./components/ThemeProvider";
 import { ThemeCustomizer } from "./components/ThemeCustomizer";
 import { Card, CardContent } from "./components/ui/card";
 import { Button } from "./components/ui/button";
+import { Tooltip } from "./components/ui/tooltip";
 
 type View = "dashboard" | "create" | "settings" | "themes";
 
@@ -96,31 +97,36 @@ const App: React.FC = () => {
               </h1>
             )}
             {sidebarCollapsed && <span className="text-2xl mx-auto">📋</span>}
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] ml-auto"
+            <Tooltip
+              content={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
-              {sidebarCollapsed ? "→" : "←"}
-            </button>
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] hover:scale-110 transition-all duration-200 ml-auto"
+              >
+                {sidebarCollapsed ? "→" : "←"}
+              </button>
+            </Tooltip>
           </div>
         </div>
 
         <nav className="flex-1 p-2 space-y-1">
           {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setCurrentView(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                currentView === item.id
-                  ? "bg-[var(--btn-primary)] text-white"
-                  : "text-[color:var(--text-primary)] hover:bg-[var(--bg-card)]"
-              }`}
-            >
-              <span className="text-xl">{item.icon}</span>
-              {!sidebarCollapsed && (
-                <span className="font-medium">{item.label}</span>
-              )}
-            </button>
+            <Tooltip key={item.id} content={item.label}>
+              <button
+                onClick={() => setCurrentView(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:scale-[1.02] ${
+                  currentView === item.id
+                    ? "bg-[var(--btn-primary)] text-white shadow-md"
+                    : "text-[color:var(--text-primary)] hover:bg-[var(--bg-card)] hover:shadow-sm"
+                }`}
+              >
+                <span className="text-xl">{item.icon}</span>
+                {!sidebarCollapsed && (
+                  <span className="font-medium">{item.label}</span>
+                )}
+              </button>
+            </Tooltip>
           ))}
         </nav>
 
@@ -135,7 +141,7 @@ const App: React.FC = () => {
 
         <div className="flex-1 overflow-auto p-6">
           {loading && currentView === "dashboard" ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-full animate-fade-in">
               <Card>
                 <CardContent className="p-8">
                   <div className="flex items-center gap-3">
@@ -148,7 +154,7 @@ const App: React.FC = () => {
               </Card>
             </div>
           ) : (
-            <>
+            <div className="animate-fade-in">
               {currentView === "dashboard" && (
                 <Dashboard tasks={tasks} onTaskUpdate={handleTaskUpdate} />
               )}
@@ -157,7 +163,7 @@ const App: React.FC = () => {
               )}
               {currentView === "themes" && <ThemeCustomizer />}
               {currentView === "settings" && <Settings />}
-            </>
+            </div>
           )}
         </div>
       </main>

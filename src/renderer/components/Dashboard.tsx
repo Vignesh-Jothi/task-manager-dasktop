@@ -91,7 +91,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
     <div className="dashboard space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card className="border-l-4 border-l-[var(--text-muted)]">
+        <Card className="border-l-4 border-l-[var(--text-muted)] hover:shadow-lg transition-all duration-300 animate-fade-in">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -106,7 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[var(--warning)]">
+        <Card className="border-l-4 border-l-[var(--warning)] hover:shadow-lg transition-all duration-200 animate-fade-in">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -121,7 +121,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[var(--info)]">
+        <Card className="border-l-4 border-l-[var(--info)] hover:shadow-lg transition-all duration-200 animate-fade-in">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -136,7 +136,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[var(--success)]">
+        <Card className="border-l-4 border-l-[var(--success)] hover:shadow-lg transition-all duration-200 animate-fade-in">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -151,7 +151,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[var(--error)]">
+        <Card className="border-l-4 border-l-[var(--error)] hover:shadow-lg transition-all duration-200 animate-fade-in">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -178,6 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
                 variant={viewMode === "today" ? undefined : "outline"}
                 onClick={() => setViewMode("today")}
                 size="sm"
+                className="transition-all duration-200 hover:scale-105"
               >
                 📅 Today
               </Button>
@@ -185,6 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
                 variant={viewMode === "week" ? undefined : "outline"}
                 onClick={() => setViewMode("week")}
                 size="sm"
+                className="transition-all duration-200 hover:scale-105"
               >
                 📆 Week
               </Button>
@@ -192,6 +194,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
                 variant={viewMode === "month" ? undefined : "outline"}
                 onClick={() => setViewMode("month")}
                 size="sm"
+                className="transition-all duration-200 hover:scale-105"
               >
                 🗓️ Month
               </Button>
@@ -199,6 +202,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
                 variant={viewMode === "queue" ? undefined : "outline"}
                 onClick={() => setViewMode("queue")}
                 size="sm"
+                className="transition-all duration-200 hover:scale-105"
               >
                 🎯 Priority Queue
               </Button>

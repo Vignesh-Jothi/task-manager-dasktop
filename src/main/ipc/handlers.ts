@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainInvokeEvent } from "electron";
+import { ipcMain, IpcMainInvokeEvent, app } from "electron";
 import { TaskService } from "../services/TaskService";
 import { LoggerService } from "../services/LoggerService";
 import { JiraService } from "../services/JiraService";
@@ -225,5 +225,11 @@ export function setupIpcHandlers(services: Services): void {
 
   ipcMain.handle("github:testConnection", async () => {
     return await githubService.testConnection();
+  });
+
+  // App operations
+  ipcMain.handle("app:relaunch", async () => {
+    app.relaunch();
+    app.exit(0);
   });
 }

@@ -7,7 +7,9 @@ import { Input } from "./ui/input";
 import { Select } from "./ui/select";
 
 const Settings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"jira" | "github">("jira");
+  const [activeTab, setActiveTab] = useState<"jira" | "github" | "data">(
+    "jira"
+  );
 
   // Jira settings
   const [jiraEnabled, setJiraEnabled] = useState(false);
@@ -28,6 +30,10 @@ const Settings: React.FC = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     loadSettings();
@@ -129,6 +135,100 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleClearCache = async () => {
+    if (
+      !confirm(
+        "Clear all cached data? The app will restart automatically. Your tasks will not be affected."
+      )
+    ) {
+      return;
+    }
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Show success message
+      alert("Cache cleared successfully! The app will restart now.");
+
+      // Restart the application
+      await window.api.relaunchApp();
+    } catch (error) {
+      console.error("Failed to clear cache:", error);
+      alert("Failed to clear cache");
+    }
+  };
+
+  const handleDeleteAllTasks = async () => {
+    setIsDeleting(true);
+    try {
+      const tasks = await window.api.getAllTasks();
+      let deletedCount = 0;
+
+      for (const task of tasks) {
+        const success = await window.api.deleteTask(task.id);
+        if (success) deletedCount++;
+      }
+
+      alert(`Successfully deleted ${deletedCount} task(s)`);
+      setShowDeleteConfirm(null);
+    } catch (error) {
+      console.error("Failed to delete tasks:", error);
+      alert("Failed to delete tasks");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCompletedTasks = async () => {
+    setIsDeleting(true);
+    try {
+      const tasks = await window.api.getAllTasks();
+      const completedTasks = tasks.filter((t) => t.status === "completed");
+      let deletedCount = 0;
+
+      for (const task of completedTasks) {
+        const success = await window.api.deleteTask(task.id);
+        if (success) deletedCount++;
+      }
+
+      alert(`Successfully deleted ${deletedCount} completed task(s)`);
+      setShowDeleteConfirm(null);
+    } catch (error) {
+      console.error("Failed to delete completed tasks:", error);
+      alert("Failed to delete completed tasks");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteGitHubData = async () => {
+    setIsDeleting(true);
+    try {
+      // Clear GitHub settings
+      await window.api.saveGitHubSettings({
+        enabled: false,
+        token: "",
+        repo: "",
+        autoSync: false,
+        syncInterval: "manual",
+      });
+
+      setGithubEnabled(false);
+      setGithubToken("");
+      setGithubRepo("");
+      setGithubAutoSync(false);
+      setGithubSyncInterval("manual");
+
+      alert("GitHub data and settings cleared successfully");
+      setShowDeleteConfirm(null);
+    } catch (error) {
+      console.error("Failed to delete GitHub data:", error);
+      alert("Failed to delete GitHub data");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="settings-container space-y-4">
       <h2 className="text-2xl font-bold text-[color:var(--text-primary)]">
@@ -149,6 +249,12 @@ const Settings: React.FC = () => {
               onClick={() => setActiveTab("github")}
             >
               GitHub Backup
+            </Button>
+            <Button
+              variant={activeTab === "data" ? "default" : "outline"}
+              onClick={() => setActiveTab("data")}
+            >
+              🗑️ Data Management
             </Button>
           </div>
         </CardContent>
@@ -358,6 +464,187 @@ const Settings: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {activeTab === "data" && (
+        <div className="space-y-4">
+          {/* Cache Management */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Cache Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+                Clear application cache including theme preferences, filter
+                settings, and temporary data. Your tasks will not be affected.
+              </p>
+              <Button onClick={handleClearCache} variant="outline">
+                🧹 Clear Cache
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Task Deletion */}
+          <Card className="border-l-4 border-l-[var(--warning)]">
+            <CardHeader>
+              <CardTitle>Delete Tasks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+                Permanently delete tasks from local storage. This action cannot
+                be undone.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-[var(--bg-sidebar)] rounded-lg">
+                  <div>
+                    <p className="font-medium text-[color:var(--text-primary)]">
+                      Delete Completed Tasks
+                    </p>
+                    <p className="text-xs text-[color:var(--text-muted)]">
+                      Remove all tasks marked as completed
+                    </p>
+                  </div>
+                  {showDeleteConfirm === "completed" ? (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={handleDeleteCompletedTasks}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Deleting..." : "Confirm"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setShowDeleteConfirm(null)}
+                        disabled={isDeleting}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setShowDeleteConfirm("completed")}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-[var(--bg-sidebar)] rounded-lg">
+                  <div>
+                    <p className="font-medium text-[color:var(--text-primary)]">
+                      Delete All Tasks
+                    </p>
+                    <p className="text-xs text-[color:var(--text-muted)]">
+                      Remove all tasks permanently
+                    </p>
+                  </div>
+                  {showDeleteConfirm === "all" ? (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={handleDeleteAllTasks}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Deleting..." : "Confirm"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setShowDeleteConfirm(null)}
+                        disabled={isDeleting}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setShowDeleteConfirm("all")}
+                    >
+                      Delete All
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* GitHub Data Deletion */}
+          <Card className="border-l-4 border-l-[var(--error)]">
+            <CardHeader>
+              <CardTitle>Delete Synced Data</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+                Clear GitHub sync settings and credentials. This will not delete
+                data from your GitHub repository.
+              </p>
+              <div className="flex items-center justify-between p-3 bg-[var(--bg-sidebar)] rounded-lg">
+                <div>
+                  <p className="font-medium text-[color:var(--text-primary)]">
+                    Clear GitHub Settings
+                  </p>
+                  <p className="text-xs text-[color:var(--text-muted)]">
+                    Remove token and repository configuration
+                  </p>
+                </div>
+                {showDeleteConfirm === "github" ? (
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={handleDeleteGitHubData}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? "Deleting..." : "Confirm"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setShowDeleteConfirm(null)}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => setShowDeleteConfirm("github")}
+                  >
+                    Clear Settings
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Warning Notice */}
+          <Card className="bg-[var(--warning)]/10 border border-[var(--warning)]/30">
+            <CardContent className="pt-4">
+              <div className="flex gap-3">
+                <span className="text-2xl">⚠️</span>
+                <div>
+                  <p className="font-semibold text-[color:var(--warning)]">
+                    Warning
+                  </p>
+                  <p className="text-sm text-[color:var(--text-secondary)] mt-1">
+                    Deletion actions are permanent and cannot be undone. Make
+                    sure to backup your data before proceeding.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

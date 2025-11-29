@@ -47,6 +47,9 @@ declare global {
       syncToGitHub: () => Promise<{ success: boolean; message: string }>;
       testGitHubConnection: () => Promise<boolean>;
 
+      // App operations
+      relaunchApp: () => Promise<void>;
+
       // Notification listener
       onNotification: (
         callback: (notification: { title: string; body: string }) => void
