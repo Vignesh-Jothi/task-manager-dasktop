@@ -60,6 +60,15 @@ export class TaskService {
       return null;
     }
 
+    // Restrict edits for completed tasks older than 24h
+    if (task.status === "completed" && task.completedAt) {
+      const completedAt = new Date(task.completedAt).getTime();
+      const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+      if (completedAt < twentyFourHoursAgo) {
+        return null;
+      }
+    }
+
     const previousValue = { ...task };
     const updatedTask = {
       ...task,
@@ -129,6 +138,38 @@ export class TaskService {
   getAllTasks(): Task[] {
     const index = this.fileSystemService.loadIndex();
     return Object.values(index.tasks);
+  }
+
+  getTasksPage(
+    offset: number,
+    limit: number,
+    filters?: {
+      status?: TaskStatus | "all";
+      priority?: Priority | "all";
+      query?: string;
+    }
+  ): { items: Task[]; total: number } {
+    const all = this.getAllTasks();
+    let filtered = all;
+
+    if (filters?.status && filters.status !== "all") {
+      filtered = filtered.filter((t) => t.status === filters.status);
+    }
+    if (filters?.priority && filters.priority !== "all") {
+      filtered = filtered.filter((t) => t.priority === filters.priority);
+    }
+    if (filters?.query && filters.query.trim()) {
+      const q = filters.query.toLowerCase();
+      filtered = filtered.filter(
+        (t) =>
+          t.title.toLowerCase().includes(q) ||
+          t.description.toLowerCase().includes(q)
+      );
+    }
+
+    const total = filtered.length;
+    const items = filtered.slice(offset, offset + limit);
+    return { items, total };
   }
 
   getTasksByStatus(status: TaskStatus): Task[] {
@@ -217,6 +258,15 @@ export class TaskService {
       return false;
     }
 
+    // Restrict deletes for completed tasks older than 24h
+    if (task.status === "completed" && task.completedAt) {
+      const completedAt = new Date(task.completedAt).getTime();
+      const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+      if (completedAt < twentyFourHoursAgo) {
+        return false;
+      }
+    }
+
     // Remove from index
     delete index.tasks[taskId];
     this.fileSystemService.saveIndex(index);
@@ -230,5 +280,30 @@ export class TaskService {
     });
 
     return true;
+  }
+
+  startTask(taskId: string): Task | null {
+    const index = this.fileSystemService.loadIndex();
+    const task = index.tasks[taskId];
+    if (!task) return null;
+
+    const previousValue = { ...task };
+    const updatedTask: Task = {
+      ...task,
+      status: "in_progress",
+      startedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    index.tasks[taskId] = updatedTask;
+    this.fileSystemService.saveIndex(index);
+    this.fileSystemService.updateTaskInMarkdown(updatedTask);
+    this.loggerService.log({
+      timestamp: new Date().toISOString(),
+      taskId,
+      action: "updated",
+      previousValue,
+      newValue: updatedTask,
+    });
+    return updatedTask;
   }
 }

@@ -1,6 +1,6 @@
 export type Priority = "low" | "high" | "higher";
 export type TaskStatus = "pending" | "in_progress" | "completed" | "missed";
-export type TaskType = "daily" | "weekly" | "monthly" | "deadline";
+export type TaskType = "daily" | "deadline";
 
 export interface Task {
   id: string;
@@ -14,6 +14,9 @@ export interface Task {
   completedAt?: string;
   updatedAt?: string;
   jiraIssueKey?: string;
+  // Timely finish feature
+  durationMinutes?: number; // optional duration for task session
+  startedAt?: string; // when user starts the task (in_progress)
 }
 
 export interface TaskLog {

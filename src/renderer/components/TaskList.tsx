@@ -2,6 +2,7 @@ import React from "react";
 import { Task } from "../../types";
 import TaskItem from "./TaskItem";
 import "../styles/TaskList.css";
+import "../styles/theme.css";
 
 interface TaskListProps {
   tasks: Task[];
@@ -11,7 +12,7 @@ interface TaskListProps {
 const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskUpdate }) => {
   if (tasks.length === 0) {
     return (
-      <div className="task-list-empty">
+      <div className="task-list-empty text-[color:var(--text-secondary)]">
         <p>No tasks found</p>
       </div>
     );

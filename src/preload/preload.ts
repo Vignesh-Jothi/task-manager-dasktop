@@ -24,10 +24,17 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("task:update", taskId, updates),
 
   completeTask: (taskId: string) => ipcRenderer.invoke("task:complete", taskId),
+  startTask: (taskId: string) => ipcRenderer.invoke("task:start", taskId),
 
   getTask: (taskId: string) => ipcRenderer.invoke("task:get", taskId),
 
   getAllTasks: () => ipcRenderer.invoke("task:getAll"),
+
+  getTasksPage: (
+    offset: number,
+    limit: number,
+    filters?: { status?: string; priority?: string; query?: string }
+  ) => ipcRenderer.invoke("task:getPage", offset, limit, filters),
 
   getTasksByStatus: (status: string) =>
     ipcRenderer.invoke("task:getByStatus", status),

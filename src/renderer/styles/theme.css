@@ -1,0 +1,44 @@
+:root{--priority-low:#94A3B8;--priority-medium:#38BDF8;--priority-high:#F59E0B;--priority-critical:#EF4444;--status-completed:#22C55E}
+
+body[data-theme="calm"]{--bg-app:#F8FAFC;--bg-card:#FFFFFF;--bg-sidebar:#F1F5F9;--text-primary:#0F172A;--text-secondary:#475569;--text-muted:#94A3B8;--btn-primary:#2563EB;--btn-primary-hover:#1D4ED8;--ring:#93C5FD;--success:#16A34A;--warning:#D97706;--error:#DC2626;--info:#0284C7}
+body[data-theme="dark"]{--bg-app:#0B0F19;--bg-card:#111827;--bg-sidebar:#020617;--text-primary:#E5E7EB;--text-secondary:#9CA3AF;--text-muted:#6B7280;--btn-primary:#3B82F6;--btn-primary-hover:#2563EB;--ring:#1D4ED8;--success:#22C55E;--warning:#F59E0B;--error:#EF4444;--info:#38BDF8}
+body[data-theme="warm"]{--bg-app:#FFF7ED;--bg-card:#FFFBEB;--bg-sidebar:#FED7AA;--text-primary:#431407;--text-secondary:#7C2D12;--text-muted:#9A3412;--btn-primary:#EA580C;--btn-primary-hover:#C2410C;--ring:#FDBA74;--success:#15803D;--warning:#CA8A04;--error:#B91C1C;--info:#0369A1}
+body[data-theme="mono"]{--bg-app:#FAFAFA;--bg-card:#FFFFFF;--bg-sidebar:#F4F4F5;--text-primary:#18181B;--text-secondary:#52525B;--text-muted:#A1A1AA;--btn-primary:#0EA5E9;--btn-primary-hover:#0284C7;--ring:#7DD3FC;--success:var(--status-completed);--warning:#52525B;--error:#DC2626;--info:var(--btn-primary)}
+
+/* Ocean Blue - Professional and calming */
+body[data-theme="ocean"]{--bg-app:#E0F2FE;--bg-card:#FFFFFF;--bg-sidebar:#BAE6FD;--text-primary:#0C4A6E;--text-secondary:#075985;--text-muted:#0369A1;--btn-primary:#0284C7;--btn-primary-hover:#0369A1;--ring:#7DD3FC;--success:#14B8A6;--warning:#F59E0B;--error:#EF4444;--info:#06B6D4}
+
+/* Sunset Orange - Energetic and warm */
+body[data-theme="sunset"]{--bg-app:#FFEDD5;--bg-card:#FFF7ED;--bg-sidebar:#FED7AA;--text-primary:#7C2D12;--text-secondary:#9A3412;--text-muted:#C2410C;--btn-primary:#F97316;--btn-primary-hover:#EA580C;--ring:#FDBA74;--success:#10B981;--warning:#EAB308;--error:#EF4444;--info:#3B82F6}
+
+/* Forest Green - Natural and refreshing */
+body[data-theme="forest"]{--bg-app:#ECFDF5;--bg-card:#F0FDF4;--bg-sidebar:#D1FAE5;--text-primary:#064E3B;--text-secondary:#065F46;--text-muted:#059669;--btn-primary:#10B981;--btn-primary-hover:#059669;--ring:#6EE7B7;--success:#22C55E;--warning:#F59E0B;--error:#EF4444;--info:#06B6D4}
+
+/* Midnight Purple - Deep and sophisticated */
+body[data-theme="midnight"]{--bg-app:#1E1B4B;--bg-card:#312E81;--bg-sidebar:#1E1B4B;--text-primary:#E0E7FF;--text-secondary:#C7D2FE;--text-muted:#A5B4FC;--btn-primary:#6366F1;--btn-primary-hover:#4F46E5;--ring:#818CF8;--success:#34D399;--warning:#FBBF24;--error:#F87171;--info:#60A5FA}
+
+/* Lavender Dream - Soft and elegant */
+body[data-theme="lavender"]{--bg-app:#FAF5FF;--bg-card:#FEFCE8;--bg-sidebar:#F3E8FF;--text-primary:#581C87;--text-secondary:#6B21A8;--text-muted:#7E22CE;--btn-primary:#9333EA;--btn-primary-hover:#7E22CE;--ring:#C084FC;--success:#10B981;--warning:#F59E0B;--error:#EF4444;--info:#3B82F6}
+
+/* Global application surfaces */
+body{background-color:var(--bg-app);color:var(--text-primary)}
+.sidebar{background-color:var(--bg-sidebar)}
+
+/* Primitive overrides using css vars */
+.card{background-color:var(--bg-card);color:var(--text-primary);border-color:color-mix(in srgb,var(--text-muted) 20%, transparent)}
+.badge{color:var(--text-secondary)}
+.btn-primary{background-color:var(--btn-primary);color:white}
+.btn-primary:hover{background-color:var(--btn-primary-hover)}
+.focus-ring{outline-color:var(--ring)}
+.text-secondary{color:var(--text-secondary)}
+.text-muted{color:var(--text-muted)}
+
+/* Priority color classes */
+.priority-low{color:var(--priority-low)}
+.priority-high{color:var(--priority-high)}
+.priority-higher{color:var(--priority-critical)}
+
+/* Status mappings */
+.status-completed{color:var(--status-completed)}
+.status-pending{color:var(--text-secondary)}
+.status-overdue{color:var(--error)}

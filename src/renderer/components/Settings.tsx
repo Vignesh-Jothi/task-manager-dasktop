@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Settings.css";
+import "../styles/theme.css";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Select } from "./ui/select";
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"jira" | "github">("jira");
@@ -125,189 +130,234 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="settings-container">
-      <h2>Settings</h2>
+    <div className="settings-container space-y-4">
+      <h2 className="text-2xl font-bold text-[color:var(--text-primary)]">
+        Settings
+      </h2>
 
-      <div className="settings-tabs">
-        <button
-          className={activeTab === "jira" ? "active" : ""}
-          onClick={() => setActiveTab("jira")}
-        >
-          Jira Integration
-        </button>
-        <button
-          className={activeTab === "github" ? "active" : ""}
-          onClick={() => setActiveTab("github")}
-        >
-          GitHub Backup
-        </button>
-      </div>
+      <Card>
+        <CardContent>
+          <div className="flex gap-2">
+            <Button
+              variant={activeTab === "jira" ? "default" : "outline"}
+              onClick={() => setActiveTab("jira")}
+            >
+              Jira Integration
+            </Button>
+            <Button
+              variant={activeTab === "github" ? "default" : "outline"}
+              onClick={() => setActiveTab("github")}
+            >
+              GitHub Backup
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {activeTab === "jira" && (
-        <div className="settings-panel">
-          <h3>Jira Configuration</h3>
-          <p className="settings-description">
-            Connect to Jira to automatically sync tasks as issues. Your API
-            token is encrypted and stored locally.
-          </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Jira Configuration</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+              Connect to Jira to automatically sync tasks as issues. Your API
+              token is encrypted and stored locally.
+            </p>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={jiraAutoSync}
-                onChange={(e) => setJiraAutoSync(e.target.checked)}
-              />
-              Enable Jira Auto-Sync
-            </label>
-          </div>
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 text-[color:var(--text-primary)]">
+                <input
+                  type="checkbox"
+                  checked={jiraAutoSync}
+                  onChange={(e) => setJiraAutoSync(e.target.checked)}
+                />
+                Enable Jira Auto-Sync
+              </label>
 
-          <div className="form-group">
-            <label htmlFor="jira-domain">Jira Domain</label>
-            <input
-              type="text"
-              id="jira-domain"
-              placeholder="yourcompany.atlassian.net"
-              value={jiraDomain}
-              onChange={(e) => setJiraDomain(e.target.value)}
-            />
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="jira-domain"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  Jira Domain
+                </label>
+                <Input
+                  type="text"
+                  id="jira-domain"
+                  placeholder="yourcompany.atlassian.net"
+                  value={jiraDomain}
+                  onChange={(e) => setJiraDomain(e.target.value)}
+                />
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="jira-email">Email</label>
-            <input
-              type="email"
-              id="jira-email"
-              placeholder="your-email@example.com"
-              value={jiraEmail}
-              onChange={(e) => setJiraEmail(e.target.value)}
-            />
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="jira-email"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  id="jira-email"
+                  placeholder="your-email@example.com"
+                  value={jiraEmail}
+                  onChange={(e) => setJiraEmail(e.target.value)}
+                />
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="jira-token">API Token</label>
-            <input
-              type="password"
-              id="jira-token"
-              placeholder="Your Jira API token"
-              value={jiraApiToken}
-              onChange={(e) => setJiraApiToken(e.target.value)}
-            />
-            <small>
-              Generate at: https://id.atlassian.com/manage/api-tokens
-            </small>
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="jira-token"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  API Token
+                </label>
+                <Input
+                  type="password"
+                  id="jira-token"
+                  placeholder="Your Jira API token"
+                  value={jiraApiToken}
+                  onChange={(e) => setJiraApiToken(e.target.value)}
+                />
+                <small className="text-xs text-[color:var(--text-muted)]">
+                  Generate at: https://id.atlassian.com/manage/api-tokens
+                </small>
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="jira-project">Project Key</label>
-            <input
-              type="text"
-              id="jira-project"
-              placeholder="PROJ"
-              value={jiraProjectKey}
-              onChange={(e) => setJiraProjectKey(e.target.value)}
-            />
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="jira-project"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  Project Key
+                </label>
+                <Input
+                  type="text"
+                  id="jira-project"
+                  placeholder="PROJ"
+                  value={jiraProjectKey}
+                  onChange={(e) => setJiraProjectKey(e.target.value)}
+                />
+              </div>
 
-          <div className="settings-actions">
-            <button onClick={handleSaveJira} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Settings"}
-            </button>
-            <button onClick={handleTestJira} className="secondary">
-              Test Connection
-            </button>
-          </div>
-        </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveJira} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save Settings"}
+                </Button>
+                <Button onClick={handleTestJira} variant="outline">
+                  Test Connection
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {activeTab === "github" && (
-        <div className="settings-panel">
-          <h3>GitHub Backup Configuration</h3>
-          <p className="settings-description">
-            Backup your tasks and logs to a private GitHub repository. Your
-            token is encrypted and stored locally.
-          </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>GitHub Backup Configuration</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+              Backup your tasks and logs to a private GitHub repository. Your
+              token is encrypted and stored locally.
+            </p>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={githubEnabled}
-                onChange={(e) => setGithubEnabled(e.target.checked)}
-              />
-              Enable GitHub Backup
-            </label>
-          </div>
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 text-[color:var(--text-primary)]">
+                <input
+                  type="checkbox"
+                  checked={githubEnabled}
+                  onChange={(e) => setGithubEnabled(e.target.checked)}
+                />
+                Enable GitHub Backup
+              </label>
 
-          <div className="form-group">
-            <label htmlFor="github-token">Personal Access Token</label>
-            <input
-              type="password"
-              id="github-token"
-              placeholder="ghp_..."
-              value={githubToken}
-              onChange={(e) => setGithubToken(e.target.value)}
-            />
-            <small>
-              Generate at: https://github.com/settings/tokens (repo scope
-              required)
-            </small>
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="github-token"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  Personal Access Token
+                </label>
+                <Input
+                  type="password"
+                  id="github-token"
+                  placeholder="ghp_..."
+                  value={githubToken}
+                  onChange={(e) => setGithubToken(e.target.value)}
+                />
+                <small className="text-xs text-[color:var(--text-muted)]">
+                  Generate at: https://github.com/settings/tokens (repo scope
+                  required)
+                </small>
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="github-repo">Repository</label>
-            <input
-              type="text"
-              id="github-repo"
-              placeholder="username/repo-name"
-              value={githubRepo}
-              onChange={(e) => setGithubRepo(e.target.value)}
-            />
-          </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="github-repo"
+                  className="text-sm text-[color:var(--text-primary)]"
+                >
+                  Repository
+                </label>
+                <Input
+                  type="text"
+                  id="github-repo"
+                  placeholder="username/repo-name"
+                  value={githubRepo}
+                  onChange={(e) => setGithubRepo(e.target.value)}
+                />
+              </div>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={githubAutoSync}
-                onChange={(e) => setGithubAutoSync(e.target.checked)}
-              />
-              Enable Auto-Sync
-            </label>
-          </div>
+              <label className="flex items-center gap-2 text-[color:var(--text-primary)]">
+                <input
+                  type="checkbox"
+                  checked={githubAutoSync}
+                  onChange={(e) => setGithubAutoSync(e.target.checked)}
+                />
+                Enable Auto-Sync
+              </label>
 
-          {githubAutoSync && (
-            <div className="form-group">
-              <label htmlFor="github-interval">Sync Interval</label>
-              <select
-                id="github-interval"
-                value={githubSyncInterval}
-                onChange={(e) =>
-                  setGithubSyncInterval(e.target.value as "daily" | "manual")
-                }
-              >
-                <option value="daily">Daily (2 AM)</option>
-                <option value="manual">Manual Only</option>
-              </select>
+              {githubAutoSync && (
+                <div className="space-y-2">
+                  <label
+                    htmlFor="github-interval"
+                    className="text-sm text-[color:var(--text-primary)]"
+                  >
+                    Sync Interval
+                  </label>
+                  <Select
+                    id="github-interval"
+                    value={githubSyncInterval}
+                    onChange={(e) =>
+                      setGithubSyncInterval(
+                        e.target.value as "daily" | "manual"
+                      )
+                    }
+                  >
+                    <option value="daily">Daily (2 AM)</option>
+                    <option value="manual">Manual Only</option>
+                  </Select>
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <Button onClick={handleSaveGitHub} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save Settings"}
+                </Button>
+                <Button onClick={handleTestGitHub} variant="outline">
+                  Test Connection
+                </Button>
+                <Button onClick={handleSyncGitHub} disabled={isSyncing}>
+                  {isSyncing ? "Syncing..." : "Sync Now"}
+                </Button>
+              </div>
             </div>
-          )}
-
-          <div className="settings-actions">
-            <button onClick={handleSaveGitHub} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Settings"}
-            </button>
-            <button onClick={handleTestGitHub} className="secondary">
-              Test Connection
-            </button>
-            <button
-              onClick={handleSyncGitHub}
-              disabled={isSyncing}
-              className="primary"
-            >
-              {isSyncing ? "Syncing..." : "Sync Now"}
-            </button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

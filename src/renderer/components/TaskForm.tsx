@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Priority, TaskType } from "../../types";
+import { Button } from "./ui/button";
+import { Clock } from "lucide-react";
 import "../styles/TaskForm.css";
 
 interface TaskFormProps {
@@ -12,6 +14,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
   const [priority, setPriority] = useState<Priority>("low");
   const [type, setType] = useState<TaskType>("daily");
   const [deadline, setDeadline] = useState("");
+  const [durationMinutes, setDurationMinutes] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +27,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
 
     setIsSubmitting(true);
     try {
-      await window.api.createTask(
+      const task = await window.api.createTask(
         title,
         description,
         priority,
@@ -32,12 +35,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
         deadline || undefined
       );
 
+      // Optionally set durationMinutes if provided
+      if (durationMinutes.trim()) {
+        const mins = parseInt(durationMinutes, 10);
+        if (!isNaN(mins) && mins > 0) {
+          await window.api.updateTask(task.id, { durationMinutes: mins });
+        }
+      }
+
       // Reset form
       setTitle("");
       setDescription("");
       setPriority("low");
       setType("daily");
       setDeadline("");
+      setDurationMinutes("");
 
       onTaskCreated();
     } catch (error) {
@@ -98,8 +110,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
               onChange={(e) => setType(e.target.value as TaskType)}
             >
               <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
               <option value="deadline">Deadline-based</option>
             </select>
           </div>
@@ -115,10 +125,25 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="duration" className="flex items-center gap-2">
+            <Clock size={16} /> Timely finish duration (minutes, optional)
+          </label>
+          <input
+            type="number"
+            id="duration"
+            min={1}
+            value={durationMinutes}
+            onChange={(e) => setDurationMinutes(e.target.value)}
+            placeholder="e.g. 25 for a focus session"
+            className="border rounded-md px-3 py-2"
+          />
+        </div>
+
         <div className="form-actions">
-          <button type="submit" disabled={isSubmitting} className="submit-btn">
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating..." : "Create Task"}
-          </button>
+          </Button>
         </div>
       </form>
 

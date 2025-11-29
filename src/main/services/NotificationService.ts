@@ -3,6 +3,7 @@ import { Task } from "../../types";
 
 export class NotificationService {
   private window: BrowserWindow | null;
+  private timers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(window: BrowserWindow | null) {
     this.window = window;
@@ -90,5 +91,25 @@ export class NotificationService {
       congratulations[Math.floor(Math.random() * congratulations.length)];
 
     this.showNotification(randomMessage, `Completed: ${task.title}`);
+  }
+
+  scheduleTimelyFinish(task: Task): void {
+    if (!task.durationMinutes || !task.startedAt) return;
+    // Clear existing timer if any
+    const existing = this.timers.get(task.id);
+    if (existing) {
+      clearTimeout(existing);
+      this.timers.delete(task.id);
+    }
+    const start = new Date(task.startedAt).getTime();
+    const endMs = start + task.durationMinutes * 60 * 1000;
+    const delay = Math.max(0, endMs - Date.now());
+    const timeout = setTimeout(() => {
+      const title = `⏱️ Session complete`;
+      const body = `Timely task window ended for: ${task.title}. Time to move to the next task.`;
+      this.showNotification(title, body);
+      this.timers.delete(task.id);
+    }, delay);
+    this.timers.set(task.id, timeout);
   }
 }

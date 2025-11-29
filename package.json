@@ -37,7 +37,11 @@
     "png-to-ico": "^2.1.4",
     "sharp": "^0.33.5",
     "typescript": "^5.3.3",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "@types/react-window": "^1.8.5",
+    "tailwindcss": "^3.4.14",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.17"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
@@ -45,7 +49,13 @@
     "node-cron": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "uuid": "^9.0.1"
+    "react-window": "^1.8.10",
+    "react-virtualized-auto-sizer": "^1.0.7",
+    "uuid": "^9.0.1",
+    "lucide-react": "^0.446.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.5.2"
   },
   "build": {
     "appId": "com.taskmanager.app",

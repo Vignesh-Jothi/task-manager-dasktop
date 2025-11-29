@@ -13,6 +13,7 @@ declare global {
       ) => Promise<any>;
       updateTask: (taskId: string, updates: any) => Promise<any>;
       completeTask: (taskId: string) => Promise<any>;
+      startTask: (taskId: string) => Promise<any>;
       getTask: (taskId: string) => Promise<any>;
       getAllTasks: () => Promise<any[]>;
       getTasksByStatus: (status: string) => Promise<any[]>;
@@ -22,6 +23,11 @@ declare global {
         endDate: string
       ) => Promise<any[]>;
       getPriorityQueue: () => Promise<any[]>;
+      getTasksPage: (
+        offset: number,
+        limit: number,
+        filters?: { status?: string; priority?: string; query?: string }
+      ) => Promise<{ items: any[]; total: number }>;
       getNextTask: () => Promise<any>;
       searchTasks: (query: string) => Promise<any[]>;
       deleteTask: (taskId: string) => Promise<boolean>;

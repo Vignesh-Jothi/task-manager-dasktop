@@ -70,6 +70,17 @@ export function setupIpcHandlers(services: Services): void {
   );
 
   ipcMain.handle(
+    "task:start",
+    async (_event: IpcMainInvokeEvent, taskId: string) => {
+      const task = taskService.startTask(taskId);
+      if (task) {
+        notificationService.scheduleTimelyFinish(task);
+      }
+      return task;
+    }
+  );
+
+  ipcMain.handle(
     "task:complete",
     async (_event: IpcMainInvokeEvent, taskId: string) => {
       const task = taskService.completeTask(taskId);
@@ -106,6 +117,22 @@ export function setupIpcHandlers(services: Services): void {
   ipcMain.handle("task:getAll", async () => {
     return taskService.getAllTasks();
   });
+
+  ipcMain.handle(
+    "task:getPage",
+    async (
+      _event: IpcMainInvokeEvent,
+      offset: number,
+      limit: number,
+      filters?: {
+        status?: TaskStatus | "all";
+        priority?: Priority | "all";
+        query?: string;
+      }
+    ) => {
+      return taskService.getTasksPage(offset, limit, filters);
+    }
+  );
 
   ipcMain.handle(
     "task:getByStatus",
