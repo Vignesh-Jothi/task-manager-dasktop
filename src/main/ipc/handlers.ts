@@ -4,6 +4,9 @@ import { LoggerService } from "../services/LoggerService";
 import { JiraService } from "../services/JiraService";
 import { GitHubService } from "../services/GitHubService";
 import { SchedulerService } from "../services/SchedulerService";
+import { EmailService } from "../services/EmailService";
+import { SummaryService } from "../services/SummaryService";
+import { FeatureFlagService } from "../services/FeatureFlagService";
 import { NotificationService } from "../services/NotificationService";
 import { Priority, TaskType, TaskStatus, Task } from "../../types";
 
@@ -14,6 +17,9 @@ interface Services {
   githubService: GitHubService;
   schedulerService: SchedulerService;
   notificationService: NotificationService;
+  emailService: EmailService;
+  summaryService: SummaryService;
+  featureFlagService: FeatureFlagService;
 }
 
 export function setupIpcHandlers(services: Services): void {
@@ -24,6 +30,9 @@ export function setupIpcHandlers(services: Services): void {
     githubService,
     schedulerService,
     notificationService,
+    emailService,
+    summaryService,
+    featureFlagService,
   } = services;
 
   // Task operations
@@ -231,5 +240,39 @@ export function setupIpcHandlers(services: Services): void {
   ipcMain.handle("app:relaunch", async () => {
     app.relaunch();
     app.exit(0);
+  });
+
+  // Email summary configuration
+  ipcMain.handle("email:getConfig", async () => {
+    return emailService.getConfig();
+  });
+
+  ipcMain.handle("email:saveConfig", async (_e, config) => {
+    emailService.saveConfig(config);
+    return { success: true };
+  });
+
+  ipcMain.handle(
+    "email:sendSummary",
+    async (_e, type: "daily" | "weekly" | "monthly") => {
+      await schedulerService.sendSummary(type);
+      return { success: true };
+    }
+  );
+
+  ipcMain.handle("summary:generate", async (_e, type: string) => {
+    const all = taskService.getAllTasks();
+    if (type === "daily") return summaryService.generateDaily(all);
+    if (type === "weekly") return summaryService.generateWeekly(all);
+    return summaryService.generateMonthly(all);
+  });
+
+  // Feature flags
+  ipcMain.handle("feature:getFlags", async () => {
+    return featureFlagService.getFlags();
+  });
+  ipcMain.handle("feature:saveFlags", async (_e, flags) => {
+    featureFlagService.saveFlags(flags);
+    return { success: true };
   });
 }

@@ -7,9 +7,28 @@ import { Input } from "./ui/input";
 import { Select } from "./ui/select";
 
 const Settings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"jira" | "github" | "data">(
-    "jira"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "jira" | "github" | "data" | "reports" | "features"
+  >("jira");
+  // Email summary settings
+  const [emailEnabled, setEmailEnabled] = useState(false);
+  const [emailTo, setEmailTo] = useState("");
+  const [smtpHost, setSmtpHost] = useState("");
+  const [smtpPort, setSmtpPort] = useState(587);
+  const [smtpSecure, setSmtpSecure] = useState(false);
+  const [smtpUser, setSmtpUser] = useState("");
+  const [smtpPass, setSmtpPass] = useState("");
+  const [emailDaily, setEmailDaily] = useState(true);
+  const [emailWeekly, setEmailWeekly] = useState(true);
+  const [emailMonthly, setEmailMonthly] = useState(true);
+  const [emailSaving, setEmailSaving] = useState(false);
+  const [emailSending, setEmailSending] = useState(false);
+
+  // Feature flags
+  const [enableSplash, setEnableSplash] = useState(true);
+  const [enableTooltips, setEnableTooltips] = useState(true);
+  const [enableEmailSummaries, setEnableEmailSummaries] = useState(true);
+  const [savingFlags, setSavingFlags] = useState(false);
 
   // Jira settings
   const [jiraEnabled, setJiraEnabled] = useState(false);
@@ -58,6 +77,26 @@ const Settings: React.FC = () => {
         setGithubRepo(githubSettings.repo);
         setGithubAutoSync(githubSettings.autoSync);
         setGithubSyncInterval(githubSettings.syncInterval);
+      }
+
+      const emailConfig = await window.api.getEmailConfig();
+      if (emailConfig) {
+        const flags = await window.api.getFeatureFlags();
+        if (flags) {
+          setEnableSplash(flags.enableSplash);
+          setEnableTooltips(flags.enableTooltips);
+          setEnableEmailSummaries(flags.enableEmailSummaries);
+        }
+        setEmailEnabled(emailConfig.enabled);
+        setEmailTo(emailConfig.to);
+        setSmtpHost(emailConfig.smtp.host);
+        setSmtpPort(emailConfig.smtp.port);
+        setSmtpSecure(emailConfig.smtp.secure);
+        setSmtpUser(emailConfig.smtp.user);
+        setSmtpPass(emailConfig.smtp.pass);
+        setEmailDaily(emailConfig.daily);
+        setEmailWeekly(emailConfig.weekly);
+        setEmailMonthly(emailConfig.monthly);
       }
     } catch (error) {
       console.error("Failed to load settings:", error);
@@ -229,6 +268,67 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleSaveEmail = async () => {
+    setEmailSaving(true);
+    try {
+      await window.api.saveEmailConfig({
+        enabled: emailEnabled,
+        to: emailTo,
+        smtp: {
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpSecure,
+          user: smtpUser,
+          pass: smtpPass,
+        },
+        daily: emailDaily,
+        weekly: emailWeekly,
+        monthly: emailMonthly,
+      });
+      alert("Email summary settings saved");
+    } catch (e) {
+      alert("Failed to save email settings");
+    } finally {
+      setEmailSaving(false);
+    }
+  };
+
+  const handleSendTestSummary = async (
+    type: "daily" | "weekly" | "monthly"
+  ) => {
+    setEmailSending(true);
+    try {
+      const summary = await window.api.generateSummary(type);
+      await window.api.sendSummaryEmail(type);
+      alert(
+        `${type} summary email queued. Preview:\n\n${summary.plain.slice(
+          0,
+          400
+        )}...`
+      );
+    } catch (e) {
+      alert("Failed to send summary email");
+    } finally {
+      setEmailSending(false);
+    }
+  };
+
+  const handleSaveFlags = async () => {
+    setSavingFlags(true);
+    try {
+      await window.api.saveFeatureFlags({
+        enableSplash,
+        enableTooltips,
+        enableEmailSummaries,
+      });
+      alert("Feature flags saved");
+    } catch (e) {
+      alert("Failed to save feature flags");
+    } finally {
+      setSavingFlags(false);
+    }
+  };
+
   return (
     <div className="settings-container space-y-4">
       <h2 className="text-2xl font-bold text-[color:var(--text-primary)]">
@@ -255,6 +355,18 @@ const Settings: React.FC = () => {
               onClick={() => setActiveTab("data")}
             >
               🗑️ Data Management
+            </Button>
+            <Button
+              variant={activeTab === "reports" ? "default" : "outline"}
+              onClick={() => setActiveTab("reports")}
+            >
+              📧 Reports & Email
+            </Button>
+            <Button
+              variant={activeTab === "features" ? "default" : "outline"}
+              onClick={() => setActiveTab("features")}
+            >
+              🧩 Feature Flags
             </Button>
           </div>
         </CardContent>
@@ -645,6 +757,183 @@ const Settings: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {activeTab === "reports" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Automated Summary Emails</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+              Receive daily (07:00), weekly (Friday 07:00), and monthly (30th
+              07:00) task summaries. Credentials are stored locally.
+            </p>
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 text-[color:var(--text-primary)]">
+                <input
+                  type="checkbox"
+                  checked={emailEnabled}
+                  onChange={(e) => setEmailEnabled(e.target.checked)}
+                />
+                Enable Email Summaries
+              </label>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm">Recipient Email</label>
+                  <Input
+                    type="email"
+                    value={emailTo}
+                    onChange={(e) => setEmailTo(e.target.value)}
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm">SMTP Host</label>
+                  <Input
+                    value={smtpHost}
+                    onChange={(e) => setSmtpHost(e.target.value)}
+                    placeholder="smtp.mailprovider.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm">SMTP Port</label>
+                  <Input
+                    type="number"
+                    value={smtpPort}
+                    onChange={(e) => setSmtpPort(Number(e.target.value))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm">SMTP User</label>
+                  <Input
+                    value={smtpUser}
+                    onChange={(e) => setSmtpUser(e.target.value)}
+                    placeholder="user@domain.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm">SMTP Password</label>
+                  <Input
+                    type="password"
+                    value={smtpPass}
+                    onChange={(e) => setSmtpPass(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2 flex items-end">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={smtpSecure}
+                      onChange={(e) => setSmtpSecure(e.target.checked)}
+                    />
+                    Use TLS/SSL
+                  </label>
+                </div>
+              </div>
+              <div className="flex gap-4 flex-wrap">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={emailDaily}
+                    onChange={(e) => setEmailDaily(e.target.checked)}
+                  />
+                  Daily
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={emailWeekly}
+                    onChange={(e) => setEmailWeekly(e.target.checked)}
+                  />
+                  Weekly (Fri)
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={emailMonthly}
+                    onChange={(e) => setEmailMonthly(e.target.checked)}
+                  />
+                  Monthly (30th)
+                </label>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button onClick={handleSaveEmail} disabled={emailSaving}>
+                  {emailSaving ? "Saving..." : "Save Email Settings"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleSendTestSummary("daily")}
+                  disabled={emailSending}
+                >
+                  {emailSending ? "Sending..." : "Send Daily Now"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleSendTestSummary("weekly")}
+                  disabled={emailSending}
+                >
+                  Weekly Preview
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleSendTestSummary("monthly")}
+                  disabled={emailSending}
+                >
+                  Monthly Preview
+                </Button>
+              </div>
+              <p className="text-xs text-[color:var(--text-muted)]">
+                Your SMTP credentials are stored locally in plain text. Use a
+                dedicated app password if available.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "features" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Feature Flags</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-[color:var(--text-secondary)] mb-4">
+              Toggle features on/off. Disabled features will not run.
+            </p>
+            <div className="space-y-3">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={enableSplash}
+                  onChange={(e) => setEnableSplash(e.target.checked)}
+                />
+                Show Startup Splash Animation
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={enableTooltips}
+                  onChange={(e) => setEnableTooltips(e.target.checked)}
+                />
+                Enable Tooltips
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={enableEmailSummaries}
+                  onChange={(e) => setEnableEmailSummaries(e.target.checked)}
+                />
+                Email Summaries (Daily/Weekly/Monthly)
+              </label>
+            </div>
+            <div className="mt-4">
+              <Button onClick={handleSaveFlags} disabled={savingFlags}>
+                {savingFlags ? "Saving..." : "Save Flags"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

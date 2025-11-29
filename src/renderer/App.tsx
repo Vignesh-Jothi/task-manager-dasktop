@@ -23,8 +23,21 @@ const App: React.FC = () => {
   const [splashStart] = useState<number>(() => performance.now());
   const MIN_SPLASH_DURATION = 1500; // ms guaranteed minimum splash visibility
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [featureFlags, setFeatureFlags] = useState<{
+    enableSplash: boolean;
+    enableTooltips: boolean;
+    enableEmailSummaries: boolean;
+  } | null>(null);
 
   useEffect(() => {
+    // load feature flags
+    (async () => {
+      try {
+        const flags = await window.api.getFeatureFlags?.();
+        if (flags) setFeatureFlags(flags);
+      } catch {}
+    })();
+
     loadTasks();
 
     // Request notification permissions
@@ -101,7 +114,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-[var(--bg-app)] overflow-hidden">
-      {showSplash && (
+      {showSplash && (featureFlags?.enableSplash ?? true) && (
         <LoadingSplash
           fadingOut={splashFade}
           done={!loading}
@@ -125,6 +138,7 @@ const App: React.FC = () => {
             )}
             {sidebarCollapsed && <span className="text-2xl mx-auto">📋</span>}
             <Tooltip
+              disabled={featureFlags ? !featureFlags.enableTooltips : false}
               content={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               <button
@@ -139,7 +153,11 @@ const App: React.FC = () => {
 
         <nav className="flex-1 p-2 space-y-1">
           {navItems.map((item) => (
-            <Tooltip key={item.id} content={item.label}>
+            <Tooltip
+              key={item.id}
+              content={item.label}
+              disabled={featureFlags ? !featureFlags.enableTooltips : false}
+            >
               <button
                 onClick={() => setCurrentView(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:scale-[1.02] ${

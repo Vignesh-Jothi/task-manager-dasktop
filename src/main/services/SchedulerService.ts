@@ -4,6 +4,9 @@ import { NotificationService } from "./NotificationService";
 import { JiraService } from "./JiraService";
 import { GitHubService } from "./GitHubService";
 import { LoggerService } from "./LoggerService";
+import { EmailService } from "./EmailService";
+import { SummaryService } from "./SummaryService";
+import { FeatureFlagService } from "./FeatureFlagService";
 
 export class SchedulerService {
   private taskService: TaskService;
@@ -11,6 +14,9 @@ export class SchedulerService {
   private jiraService: JiraService;
   private githubService: GitHubService;
   private loggerService: LoggerService;
+  private emailService?: EmailService;
+  private summaryService?: SummaryService;
+  private featureFlags?: FeatureFlagService;
   private tasks: any[] = [];
 
   constructor(
@@ -18,13 +24,19 @@ export class SchedulerService {
     notificationService: NotificationService,
     jiraService: JiraService,
     githubService: GitHubService,
-    loggerService: LoggerService
+    loggerService: LoggerService,
+    emailService?: EmailService,
+    summaryService?: SummaryService,
+    featureFlags?: FeatureFlagService
   ) {
     this.taskService = taskService;
     this.notificationService = notificationService;
     this.jiraService = jiraService;
     this.githubService = githubService;
     this.loggerService = loggerService;
+    this.emailService = emailService;
+    this.summaryService = summaryService;
+    this.featureFlags = featureFlags;
   }
 
   start(): void {
@@ -47,6 +59,24 @@ export class SchedulerService {
       }
     });
     this.tasks.push(dailyBackup);
+
+    // Daily summary email 7:00 local
+    const dailySummary = cron.schedule("0 7 * * *", async () => {
+      await this.sendSummary("daily");
+    });
+    this.tasks.push(dailySummary);
+
+    // Weekly summary Friday 7:00
+    const weeklySummary = cron.schedule("0 7 * * 5", async () => {
+      await this.sendSummary("weekly");
+    });
+    this.tasks.push(weeklySummary);
+
+    // Monthly summary 30th 7:00
+    const monthlySummary = cron.schedule("0 7 30 * *", async () => {
+      await this.sendSummary("monthly");
+    });
+    this.tasks.push(monthlySummary);
 
     console.log("Scheduler started");
   }
@@ -97,5 +127,25 @@ export class SchedulerService {
     if (nextTask) {
       this.notificationService.notifyNextTask(nextTask);
     }
+  }
+
+  async sendSummary(type: "daily" | "weekly" | "monthly"): Promise<void> {
+    if (!this.emailService || !this.summaryService) return;
+    const cfg = this.emailService.getConfig();
+    const flags = this.featureFlags?.getFlags();
+    if (flags && !flags.enableEmailSummaries) return;
+    if (!cfg || !cfg.enabled) return;
+    if (type === "daily" && !cfg.daily) return;
+    if (type === "weekly" && !cfg.weekly) return;
+    if (type === "monthly" && !cfg.monthly) return;
+
+    const all = this.taskService.getAllTasks();
+    let summary;
+    if (type === "daily") summary = this.summaryService.generateDaily(all);
+    else if (type === "weekly")
+      summary = this.summaryService.generateWeekly(all);
+    else summary = this.summaryService.generateMonthly(all);
+    const subject = `${type[0].toUpperCase() + type.slice(1)} Task Summary`;
+    await this.emailService.sendEmail(subject, summary.plain);
   }
 }

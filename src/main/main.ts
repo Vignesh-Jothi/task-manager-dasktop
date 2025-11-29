@@ -4,6 +4,9 @@ import { FileSystemService } from "./services/FileSystemService";
 import { TaskService } from "./services/TaskService";
 import { LoggerService } from "./services/LoggerService";
 import { SchedulerService } from "./services/SchedulerService";
+import { EmailService } from "./services/EmailService";
+import { SummaryService } from "./services/SummaryService";
+import { FeatureFlagService } from "./services/FeatureFlagService";
 import { NotificationService } from "./services/NotificationService";
 import { JiraService } from "./services/JiraService";
 import { GitHubService } from "./services/GitHubService";
@@ -29,12 +32,18 @@ const githubService = new GitHubService(
   dataDir,
   logsDir
 );
+const emailService = new EmailService(fileSystemService, loggerService);
+const summaryService = new SummaryService();
+const featureFlagService = new FeatureFlagService(fileSystemService);
 const schedulerService = new SchedulerService(
   taskService,
   notificationService,
   jiraService,
   githubService,
-  loggerService
+  loggerService,
+  emailService,
+  summaryService,
+  featureFlagService
 );
 
 function createWindow() {
@@ -95,6 +104,9 @@ app.whenReady().then(async () => {
     githubService,
     schedulerService,
     notificationService,
+    emailService,
+    summaryService,
+    featureFlagService,
   });
 
   // Start scheduler

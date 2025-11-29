@@ -3,9 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 interface TooltipProps {
   content: string;
   children: React.ReactElement;
+  disabled?: boolean;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
+export const Tooltip: React.FC<TooltipProps> = ({
+  content,
+  children,
+  disabled,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const targetRef = useRef<HTMLDivElement>(null);
@@ -23,6 +28,10 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
   };
 
   useEffect(() => {}, []);
+
+  if (disabled) {
+    return children;
+  }
 
   return (
     <>

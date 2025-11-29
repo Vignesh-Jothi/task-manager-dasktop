@@ -50,6 +50,28 @@ declare global {
       // App operations
       relaunchApp: () => Promise<void>;
 
+      // Email summary operations
+      getEmailConfig: () => Promise<any>;
+      saveEmailConfig: (config: any) => Promise<{ success: boolean }>;
+      sendSummaryEmail: (
+        type: "daily" | "weekly" | "monthly"
+      ) => Promise<{ success: boolean }>;
+      generateSummary: (
+        type: "daily" | "weekly" | "monthly"
+      ) => Promise<{ plain: string; metrics: any }>;
+
+      // Feature flags
+      getFeatureFlags: () => Promise<{
+        enableSplash: boolean;
+        enableTooltips: boolean;
+        enableEmailSummaries: boolean;
+      }>;
+      saveFeatureFlags: (flags: {
+        enableSplash: boolean;
+        enableTooltips: boolean;
+        enableEmailSummaries: boolean;
+      }) => Promise<{ success: boolean }>;
+
       // Notification listener
       onNotification: (
         callback: (notification: { title: string; body: string }) => void

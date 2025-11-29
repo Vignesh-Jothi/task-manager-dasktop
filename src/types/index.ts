@@ -21,10 +21,17 @@ export interface Task {
 
 export interface TaskLog {
   timestamp: string;
-  taskId: string;
-  action: "created" | "updated" | "completed" | "missed" | "deleted";
-  previousValue?: Partial<Task>;
-  newValue?: Partial<Task>;
+  taskId: string; // synthetic IDs allowed for system events e.g. 'summary'
+  action:
+    | "created"
+    | "updated"
+    | "completed"
+    | "missed"
+    | "deleted"
+    | "email_sent"
+    | "email_error";
+  previousValue?: Partial<Task> | Record<string, any>;
+  newValue?: Partial<Task> | Record<string, any>;
 }
 
 export interface AppSettings {

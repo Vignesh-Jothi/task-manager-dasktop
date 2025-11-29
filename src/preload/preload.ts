@@ -78,6 +78,20 @@ contextBridge.exposeInMainWorld("api", {
   // App operations
   relaunchApp: () => ipcRenderer.invoke("app:relaunch"),
 
+  // Email summary operations
+  getEmailConfig: () => ipcRenderer.invoke("email:getConfig"),
+  saveEmailConfig: (config: any) =>
+    ipcRenderer.invoke("email:saveConfig", config),
+  sendSummaryEmail: (type: "daily" | "weekly" | "monthly") =>
+    ipcRenderer.invoke("email:sendSummary", type),
+  generateSummary: (type: "daily" | "weekly" | "monthly") =>
+    ipcRenderer.invoke("summary:generate", type),
+
+  // Feature flags
+  getFeatureFlags: () => ipcRenderer.invoke("feature:getFlags"),
+  saveFeatureFlags: (flags: any) =>
+    ipcRenderer.invoke("feature:saveFlags", flags),
+
   // Notification listener
   onNotification: (
     callback: (notification: { title: string; body: string }) => void
