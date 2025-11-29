@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from "./components/ThemeProvider";
 import { ThemeCustomizer } from "./components/ThemeCustomizer";
 import { Card, CardContent } from "./components/ui/card";
 import { Button } from "./components/ui/button";
+import LoadingSplash from "./components/LoadingSplash";
 import { Tooltip } from "./components/ui/tooltip";
 
 type View = "dashboard" | "create" | "settings" | "themes";
@@ -17,6 +18,10 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>("dashboard");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
+  const [splashFade, setSplashFade] = useState(false);
+  const [splashStart] = useState<number>(() => performance.now());
+  const MIN_SPLASH_DURATION = 1500; // ms guaranteed minimum splash visibility
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
@@ -50,7 +55,21 @@ const App: React.FC = () => {
       link.href = "/assets/icon.svg";
       link.type = "image/svg+xml";
     }
+    return () => {};
   }, []);
+
+  useEffect(() => {
+    if (!loading && showSplash) {
+      const elapsed = performance.now() - splashStart;
+      const remaining = Math.max(0, MIN_SPLASH_DURATION - elapsed);
+      const fadeTimer = setTimeout(() => {
+        setSplashFade(true);
+        const removal = setTimeout(() => setShowSplash(false), 500);
+        return () => clearTimeout(removal);
+      }, remaining);
+      return () => clearTimeout(fadeTimer);
+    }
+  }, [loading, showSplash, splashStart]);
 
   const loadTasks = async () => {
     setLoading(true);
@@ -82,6 +101,14 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-[var(--bg-app)] overflow-hidden">
+      {showSplash && (
+        <LoadingSplash
+          fadingOut={splashFade}
+          done={!loading}
+          minDuration={MIN_SPLASH_DURATION}
+          startTime={splashStart}
+        />
+      )}
       {/* Sidebar */}
       <aside
         className={`${

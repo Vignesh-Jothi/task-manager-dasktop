@@ -87,6 +87,30 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, onTaskUpdate }) => {
     missed: tasks.filter((t) => t.status === "missed").length,
   };
 
+  if (tasks.length === 0 && filteredTasks.length === 0) {
+    // Provide skeleton set for initial load fallback
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="h-32 rounded-lg bg-[var(--bg-card)] relative overflow-hidden skeleton"
+            >
+              <div className="absolute inset-0 shimmer" />
+            </div>
+          ))}
+        </div>
+        <div className="h-24 rounded-lg bg-[var(--bg-card)] relative overflow-hidden skeleton">
+          <div className="absolute inset-0 shimmer" />
+        </div>
+        <div className="h-64 rounded-lg bg-[var(--bg-card)] relative overflow-hidden skeleton">
+          <div className="absolute inset-0 shimmer" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard space-y-6">
       {/* Stats Grid */}
