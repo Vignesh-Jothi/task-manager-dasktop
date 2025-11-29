@@ -92,6 +92,16 @@ contextBridge.exposeInMainWorld("api", {
   saveFeatureFlags: (flags: any) =>
     ipcRenderer.invoke("feature:saveFlags", flags),
 
+  onFeatureFlagsUpdated: (
+    callback: (flags: {
+      enableSplash: boolean;
+      enableTooltips: boolean;
+      enableEmailSummaries: boolean;
+    }) => void
+  ) => {
+    ipcRenderer.on("featureFlagsUpdated", (_evt, flags) => callback(flags));
+  },
+
   // Notification listener
   onNotification: (
     callback: (notification: { title: string; body: string }) => void

@@ -76,6 +76,15 @@ declare global {
       onNotification: (
         callback: (notification: { title: string; body: string }) => void
       ) => void;
+
+      // Feature flags listener
+      onFeatureFlagsUpdated?: (
+        callback: (flags: {
+          enableSplash: boolean;
+          enableTooltips: boolean;
+          enableEmailSummaries: boolean;
+        }) => void
+      ) => void;
     };
   }
 }

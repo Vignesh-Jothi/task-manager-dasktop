@@ -24,6 +24,11 @@ export class FeatureFlagService {
   }
 
   saveFlags(flags: FeatureFlags): void {
-    this.fileSystem.saveConfig(this.FILE, flags);
+    try {
+      this.fileSystem.saveConfig(this.FILE, flags);
+      console.log("[FeatureFlagService] Flags saved successfully");
+    } catch (error) {
+      throw error;
+    }
   }
 }

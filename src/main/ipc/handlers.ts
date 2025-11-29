@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainInvokeEvent, app } from "electron";
+import { ipcMain, IpcMainInvokeEvent, app, BrowserWindow } from "electron";
 import { TaskService } from "../services/TaskService";
 import { LoggerService } from "../services/LoggerService";
 import { JiraService } from "../services/JiraService";
@@ -272,7 +272,17 @@ export function setupIpcHandlers(services: Services): void {
     return featureFlagService.getFlags();
   });
   ipcMain.handle("feature:saveFlags", async (_e, flags) => {
-    featureFlagService.saveFlags(flags);
-    return { success: true };
+    try {
+      console.log("[IPC] Saving feature flags:", flags);
+      featureFlagService.saveFlags(flags);
+      const win = BrowserWindow.getAllWindows()[0];
+      if (win) {
+        win.webContents.send("featureFlagsUpdated", flags);
+      }
+      console.log("[IPC] Feature flags saved successfully");
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
   });
 }

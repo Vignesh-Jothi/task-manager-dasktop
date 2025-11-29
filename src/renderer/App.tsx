@@ -38,6 +38,15 @@ const App: React.FC = () => {
       } catch {}
     })();
 
+    // subscribe to flag updates
+    window.api.onFeatureFlagsUpdated?.((flags) => {
+      setFeatureFlags(flags);
+      if (flags && !flags.enableSplash) {
+        setSplashFade(true);
+        setShowSplash(false);
+      }
+    });
+
     loadTasks();
 
     // Request notification permissions

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select } from "./ui/select";
+import { Switch } from "./ui/switch";
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -316,14 +317,23 @@ const Settings: React.FC = () => {
   const handleSaveFlags = async () => {
     setSavingFlags(true);
     try {
-      await window.api.saveFeatureFlags({
+      console.log("Saving feature flags:", {
         enableSplash,
         enableTooltips,
         enableEmailSummaries,
       });
-      alert("Feature flags saved");
+      const result = await window.api.saveFeatureFlags({
+        enableSplash,
+        enableTooltips,
+        enableEmailSummaries,
+      });
+      alert("Feature flags saved successfully");
     } catch (e) {
-      alert("Failed to save feature flags");
+      console.error("Failed to save feature flags:", e);
+      alert(
+        "Failed to save feature flags: " +
+          (e instanceof Error ? e.message : String(e))
+      );
     } finally {
       setSavingFlags(false);
     }
@@ -898,39 +908,165 @@ const Settings: React.FC = () => {
             <CardTitle>Feature Flags</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-[color:var(--text-secondary)] mb-4">
-              Toggle features on/off. Disabled features will not run.
+            <p className="text-sm text-[color:var(--text-secondary)] mb-6">
+              Control which features are enabled. Changes take effect
+              immediately.
             </p>
-            <div className="space-y-3">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={enableSplash}
-                  onChange={(e) => setEnableSplash(e.target.checked)}
-                />
-                Show Startup Splash Animation
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={enableTooltips}
-                  onChange={(e) => setEnableTooltips(e.target.checked)}
-                />
-                Enable Tooltips
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={enableEmailSummaries}
-                  onChange={(e) => setEnableEmailSummaries(e.target.checked)}
-                />
-                Email Summaries (Daily/Weekly/Monthly)
-              </label>
+            <div className="space-y-6">
+              {/* Startup & UI Features */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
+                  Startup & Interface
+                </h3>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Startup Splash Animation
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Show animated loading screen when app starts
+                    </div>
+                  </div>
+                  <Switch
+                    checked={enableSplash}
+                    onCheckedChange={setEnableSplash}
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Tooltips
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Display helpful hints when hovering over UI elements
+                    </div>
+                  </div>
+                  <Switch
+                    checked={enableTooltips}
+                    onCheckedChange={setEnableTooltips}
+                  />
+                </div>
+              </div>
+
+              {/* Automation Features */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
+                  Automation & Notifications
+                </h3>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Email Summary Reports
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Receive daily, weekly, and monthly task summaries via
+                      email
+                    </div>
+                  </div>
+                  <Switch
+                    checked={enableEmailSummaries}
+                    onCheckedChange={setEnableEmailSummaries}
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Deadline Notifications
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Receive alerts for upcoming task deadlines
+                    </div>
+                  </div>
+                  <Switch
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    disabled={true}
+                  />
+                </div>
+              </div>
+
+              {/* Integration Features */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
+                  Integrations
+                </h3>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Jira Sync
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Automatically sync tasks with Jira issues
+                    </div>
+                  </div>
+                  <Switch
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    disabled={true}
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      GitHub Backup
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Backup tasks and logs to GitHub repository
+                    </div>
+                  </div>
+                  <Switch
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    disabled={true}
+                  />
+                </div>
+              </div>
+
+              {/* Performance Features */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
+                  Performance
+                </h3>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Virtual Scrolling
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Optimize rendering for large task lists (100+ items)
+                    </div>
+                  </div>
+                  <Switch
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    disabled={true}
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
+                  <div className="flex-1">
+                    <div className="font-medium text-[color:var(--text-primary)]">
+                      Animation Effects
+                    </div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      Enable smooth transitions and visual effects
+                    </div>
+                  </div>
+                  <Switch
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    disabled={true}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-6 pt-6 border-t border-[color:var(--text-muted)]/20">
               <Button onClick={handleSaveFlags} disabled={savingFlags}>
-                {savingFlags ? "Saving..." : "Save Flags"}
+                {savingFlags ? "Saving..." : "💾 Save Feature Flags"}
               </Button>
+              <p className="text-xs text-[color:var(--text-muted)] mt-3">
+                Note: Some features marked as "always enabled" are core to the
+                app and cannot be disabled.
+              </p>
             </div>
           </CardContent>
         </Card>
