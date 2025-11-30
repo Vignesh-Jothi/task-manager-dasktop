@@ -6,27 +6,17 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)
 
-## 📖 Table of Contents
+## 📖 Essentials
 
-- [Overview](#overview)
-- [🎯 Mission Control Features (NEW)](#mission-control-features)
-- [Key Features](#key-features)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Core Features](#core-features)
-  - [Task Management](#task-management)
-  - [Mission Control System](#mission-control-system)
-  - [Theming System](#theming-system)
-  - [Email Summaries](#email-summaries)
-  - [Integrations](#integrations)
-  - [Feature Flags](#feature-flags)
-- [Architecture](#architecture)
-- [Development](#development)
-- [Configuration](#configuration)
-- [Building & Distribution](#building--distribution)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+- Overview
+- Key features summary
+- Install & quick start
+- Links to detailed docs in `docs/`
+
+For full extended narrative and deep integration notes, see:
+- `docs/mission-control.md`
+- `docs/dev-guide.md`
+- `docs/quick-start.md`
 
 ---
 
@@ -46,58 +36,10 @@ Tasktronaut is a **local-first**, **privacy-focused** desktop application that t
 
 ---
 
-## 🎯 Mission Control Features
+## 🎯 Mission Control Snapshot
+Daily Briefing • Orbit Levels • Mission Mode • Captain's Log • Procrastination Radar • XP/Streaks • Abort Emergency Mode • Gravity weighting • Projects.
 
-**NEW in v2.0!** Tasktronaut now features a complete mission-control experience:
-
-### 📡 Daily Mission Briefing
-Your morning command center showing:
-- Mission conditions (smooth/turbulent/critical)
-- Top 3 priority objectives
-- Overdue warnings
-- Optional side quests
-- Motivational mission quotes
-
-### 🌌 Orbit Levels (Replaces Simple Priorities)
-- **Low Orbit** 🌍: Quick wins, easy tasks
-- **Mid Orbit** 🛰️: Standard work
-- **Deep Space** 🌌: High-impact, complex missions
-
-### 🎮 Mission Mode (Focus Mode)
-Full-screen immersion for single-task focus with:
-- Animated background
-- Live mission timer
-- Zero distractions
-- Success animations + XP rewards
-
-### 📖 Captain's Log
-Auto-generated daily markdown logs of all completed missions with:
-- Mission timestamps
-- Duration tracking
-- Mood/status notes
-- Searchable history
-
-### 📡 Procrastination Radar
-Pattern detection without judgment:
-- Weekly avoidance patterns
-- Day-of-week insights
-- Top procrastinated tasks
-- Actionable suggestions
-
-### ⭐ XP Progression System
-Earn experience points and rank up:
-- Rookie Astronaut → Interstellar Commander
-- Streak tracking
-- Mission success rate
-- Weekly stability score
-
-### 🚨 Abort Mission Mode
-Emergency protocol when overwhelmed:
-- Hides non-critical tasks
-- Shows only urgent/protected missions
-- Adaptive productivity, not punitive
-
-**[📚 Read the full Mission Control Guide →](./MISSION_CONTROL.md)**
+Details & heuristics: see `docs/mission-control.md`.
 
 ---
 

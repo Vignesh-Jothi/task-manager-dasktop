@@ -3,7 +3,12 @@
   "compilerOptions": {
     "outDir": "./dist/main",
     "lib": ["ES2020"],
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@types": ["src/shared/types/index.ts"]
+    }
   },
   "include": ["src/main/**/*", "src/preload/**/*"],
   "exclude": ["node_modules", "dist", "src/renderer"]

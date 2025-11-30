@@ -1,10 +1,10 @@
 import React from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { Task } from "../../types";
+import { Task } from "@types";
 import TaskItem from "./TaskItem";
-import "../styles/TaskList.css";
-import "../styles/theme.css";
+import "../../../styles/TaskList.css";
+import "../../../styles/theme.css";
 
 interface VirtualizedTaskListProps {
   tasks: Task[];

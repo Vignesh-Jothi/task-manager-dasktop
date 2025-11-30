@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Task } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Task } from "@types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Button } from "@ui/button";
+import { Badge } from "@ui/badge";
 
 interface AbortMissionModeProps {
   tasks: Task[];
@@ -17,48 +17,29 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
 }) => {
   const [criticalTasks, setCriticalTasks] = useState<Task[]>([]);
   const [hiddenCount, setHiddenCount] = useState(0);
-
   useEffect(() => {
     filterCriticalTasks();
   }, [tasks]);
 
   const filterCriticalTasks = () => {
-    // Only show tasks that are:
-    // 1. Marked as abort-protected
-    // 2. Deep-space orbit with deadline today/tomorrow
-    // 3. High gravity (>70)
-    // 4. Overdue
-
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const todayStr = today.toISOString().split("T")[0];
     const tomorrowStr = tomorrow.toISOString().split("T")[0];
-
     const critical = tasks.filter((task) => {
       if (task.status === "completed" || task.status === "missed") return false;
-
-      // Abort-protected tasks always show
       if (task.abortProtected) return true;
-
-      // Overdue tasks
       if (task.deadline && task.deadline < todayStr) return true;
-
-      // Deep-space with urgent deadline
       if (
         task.orbit?.level === "deep-space" &&
         task.deadline &&
         (task.deadline === todayStr || task.deadline === tomorrowStr)
-      ) {
+      )
         return true;
-      }
-
-      // High gravity tasks
       if ((task.gravity || 0) > 70) return true;
-
       return false;
     });
-
     setCriticalTasks(critical);
     setHiddenCount(
       tasks.filter((t) => t.status !== "completed" && t.status !== "missed")
@@ -71,7 +52,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
     await window.api.updateTask(taskId, { abortProtected: true });
     filterCriticalTasks();
   };
-
   const handleUnprotectTask = async (taskId: string) => {
     await window.api.updateTask(taskId, { abortProtected: false });
     filterCriticalTasks();
@@ -79,7 +59,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Emergency Banner */}
       <Card className="border-2 border-[var(--error)] bg-gradient-to-r from-[var(--error)]/10 to-transparent">
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
@@ -112,8 +91,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Critical Tasks */}
       {criticalTasks.length === 0 ? (
         <Card>
           <CardContent className="pt-12 pb-12 text-center">
@@ -130,8 +107,7 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
       ) : (
         <div className="space-y-4">
           <h3 className="text-xl font-bold text-[color:var(--text-primary)] flex items-center gap-2">
-            <span>⚠️</span>
-            Critical Missions Only
+            <span>⚠️</span>Critical Missions Only
           </h3>
           {criticalTasks.map((task) => {
             const isOverdue =
@@ -139,11 +115,10 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
               task.deadline < new Date().toISOString().split("T")[0];
             const daysUntilDeadline = task.deadline
               ? Math.ceil(
-                  (new Date(task.deadline).getTime() - new Date().getTime()) /
+                  (new Date(task.deadline).getTime() - Date.now()) /
                     (1000 * 60 * 60 * 24)
                 )
               : null;
-
             return (
               <Card
                 key={task.id}
@@ -169,13 +144,12 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
                             </p>
                           )}
                         </div>
-                        {task.abortProtected ? (
+                        {task.abortProtected && (
                           <Badge variant="warning" className="ml-2">
                             🛡️ Protected
                           </Badge>
-                        ) : null}
+                        )}
                       </div>
-
                       <div className="flex items-center gap-3 flex-wrap mt-3">
                         {task.orbit && (
                           <Badge>
@@ -212,8 +186,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
                           </Badge>
                         )}
                       </div>
-
-                      {/* Why it's critical */}
                       <div className="mt-3 p-2 rounded bg-[var(--bg-app)] text-xs text-[color:var(--text-muted)]">
                         <strong>Critical because:</strong>{" "}
                         {task.abortProtected && "Manually protected. "}
@@ -224,7 +196,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
                           "Deep-space with urgent deadline."}
                       </div>
                     </div>
-
                     <div className="flex flex-col gap-2">
                       {!task.abortProtected ? (
                         <Button
@@ -252,8 +223,6 @@ const AbortMissionMode: React.FC<AbortMissionModeProps> = ({
           })}
         </div>
       )}
-
-      {/* Info Box */}
       <Card className="border border-[var(--info)]/30 bg-[var(--info)]/5">
         <CardContent className="pt-4">
           <div className="flex gap-3">

@@ -3,7 +3,15 @@
   "compilerOptions": {
     "outDir": "./dist/renderer",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@features/*": ["src/renderer/features/*"],
+      "@ui/*": ["src/renderer/ui/primitives/*"],
+      "@app/*": ["src/renderer/app/*"],
+      "@types": ["src/shared/types/index.ts"]
+    }
   },
   "include": ["src/renderer/**/*"],
   "exclude": ["node_modules", "dist", "src/main"]

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Task, ProcrastinationPattern, OrbitLevel } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
+import { Task, ProcrastinationPattern, OrbitLevel } from "@types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Badge } from "@ui/badge";
 
 interface ProcrastinationRadarProps {
   tasks: Task[];
 }
-
 interface RadarData {
   patterns: ProcrastinationPattern[];
   topProblems: Array<{ task: Task; score: number }>;
@@ -17,13 +16,11 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
   tasks,
 }) => {
   const [radarData, setRadarData] = useState<RadarData | null>(null);
-
   useEffect(() => {
     analyzePatterns();
   }, [tasks]);
 
   const analyzePatterns = () => {
-    // Analyze by day of week
     const dayPatterns: {
       [key: number]: {
         snoozes: number[];
@@ -31,11 +28,8 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         orbit: OrbitLevel[];
       };
     } = {};
-
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 7; i++)
       dayPatterns[i] = { snoozes: [], reschedules: [], orbit: [] };
-    }
-
     tasks.forEach((task) => {
       if (task.createdAt) {
         const day = new Date(task.createdAt).getDay();
@@ -45,29 +39,22 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         if (task.orbit) dayPatterns[day].orbit.push(task.orbit.level);
       }
     });
-
-    // Calculate patterns by day
     const patterns: ProcrastinationPattern[] = Object.entries(dayPatterns).map(
       ([day, data]) => {
-        const avgSnooze =
-          data.snoozes.length > 0
-            ? data.snoozes.reduce((a, b) => a + b, 0) / data.snoozes.length
-            : 0;
-        const avgReschedule =
-          data.reschedules.length > 0
-            ? data.reschedules.reduce((a, b) => a + b, 0) /
-              data.reschedules.length
-            : 0;
-
-        // Find most common orbit level for this day
+        const avgSnooze = data.snoozes.length
+          ? data.snoozes.reduce((a, b) => a + b, 0) / data.snoozes.length
+          : 0;
+        const avgReschedule = data.reschedules.length
+          ? data.reschedules.reduce((a, b) => a + b, 0) /
+            data.reschedules.length
+          : 0;
         const orbitCounts: { [key in OrbitLevel]?: number } = {};
         data.orbit.forEach((o) => {
           orbitCounts[o] = (orbitCounts[o] || 0) + 1;
         });
         const mostCommonOrbit = Object.entries(orbitCounts).sort(
-          (a, b) => b[1] - a[1]
+          (a, b) => (b[1] || 0) - (a[1] || 0)
         )[0]?.[0] as OrbitLevel | undefined;
-
         return {
           dayOfWeek: parseInt(day),
           orbitLevel: mostCommonOrbit || "mid-orbit",
@@ -82,8 +69,6 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         };
       }
     );
-
-    // Find top procrastinated tasks
     const topProblems = tasks
       .filter((t) => t.status !== "completed")
       .map((task) => {
@@ -91,7 +76,7 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         const rescheduleScore = (task.rescheduleCount || 0) * 3;
         const abandonScore = (task.abandonCount || 0) * 5;
         const ageScore = Math.floor(
-          (new Date().getTime() - new Date(task.createdAt).getTime()) /
+          (Date.now() - new Date(task.createdAt).getTime()) /
             (1000 * 60 * 60 * 24)
         );
         return {
@@ -101,10 +86,7 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
       })
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
-
-    // Generate insights
     const insights = generateInsights(patterns, topProblems);
-
     setRadarData({ patterns, topProblems, insights });
   };
 
@@ -115,7 +97,6 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
     orbitLevel?: OrbitLevel
   ): string | undefined => {
     if (avgSnooze < 0.5 && avgReschedule < 0.5) return undefined;
-
     const dayNames = [
       "Sunday",
       "Monday",
@@ -126,17 +107,12 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
       "Saturday",
     ];
     const dayName = dayNames[day];
-
-    if (avgSnooze > 2) {
+    if (avgSnooze > 2)
       return `High snooze activity on ${dayName}s. Consider scheduling fewer tasks or blocking focus time.`;
-    }
-    if (avgReschedule > 2) {
+    if (avgReschedule > 2)
       return `Frequent rescheduling on ${dayName}s. Tasks may be too ambitious or poorly scoped.`;
-    }
-    if (orbitLevel === "deep-space") {
+    if (orbitLevel === "deep-space")
       return `${dayName}s show deep-space task avoidance. Try tackling complex work earlier in the week.`;
-    }
-
     return undefined;
   };
 
@@ -145,15 +121,12 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
     topProblems: Array<{ task: Task; score: number }>
   ): string[] => {
     const insights: string[] = [];
-
-    // Day-based insights
     const worstDay = patterns.reduce((prev, curr) =>
       curr.avgSnoozeCount + curr.avgRescheduleCount >
       prev.avgSnoozeCount + prev.avgRescheduleCount
         ? curr
         : prev
     );
-
     if (worstDay.avgSnoozeCount + worstDay.avgRescheduleCount > 1) {
       const dayNames = [
         "Sunday",
@@ -170,52 +143,39 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         } is your highest procrastination day. Consider lighter planning.`
       );
     }
-
-    // Deep-space avoidance
     const deepSpaceTasks = topProblems.filter(
       (p) => p.task.orbit?.level === "deep-space"
     );
-    if (deepSpaceTasks.length >= 3) {
+    if (deepSpaceTasks.length >= 3)
       insights.push(
-        `🌌 You tend to avoid deep-space tasks. Try breaking them into smaller mid-orbit chunks.`
+        "🌌 You tend to avoid deep-space tasks. Try breaking them into smaller mid-orbit chunks."
       );
-    }
-
-    // Chronic reschedulers
     const chronicReschedulers = topProblems.filter(
       (p) => (p.task.rescheduleCount || 0) > 3
     );
-    if (chronicReschedulers.length > 0) {
+    if (chronicReschedulers.length > 0)
       insights.push(
         `📅 ${chronicReschedulers.length} task(s) rescheduled 3+ times. Consider if they're still relevant.`
       );
-    }
-
-    // Old pending tasks
-    const oldTasks = topProblems.filter((p) => {
-      const age = Math.floor(
-        (new Date().getTime() - new Date(p.task.createdAt).getTime()) /
-          (1000 * 60 * 60 * 24)
-      );
-      return age > 30;
-    });
-    if (oldTasks.length > 0) {
+    const oldTasks = topProblems.filter(
+      (p) =>
+        Math.floor(
+          (Date.now() - new Date(p.task.createdAt).getTime()) /
+            (1000 * 60 * 60 * 24)
+        ) > 30
+    );
+    if (oldTasks.length > 0)
       insights.push(
         `⏰ ${oldTasks.length} task(s) over 30 days old. Time to complete or archive.`
       );
-    }
-
-    // Generic positive feedback
-    if (insights.length === 0) {
+    if (insights.length === 0)
       insights.push(
-        `✅ Radar clear. No significant procrastination patterns detected.`
+        "✅ Radar clear. No significant procrastination patterns detected."
       );
-    }
-
     return insights;
   };
 
-  if (!radarData) {
+  if (!radarData)
     return (
       <Card>
         <CardContent className="p-6">
@@ -225,18 +185,15 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
         </CardContent>
       </Card>
     );
-  }
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
     <div className="space-y-6">
-      {/* Insights Banner */}
       <Card className="border-l-4 border-l-[var(--info)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <span className="text-2xl">📡</span>
-            Procrastination Radar
+            <span className="text-2xl">📡</span>Procrastination Radar
           </CardTitle>
           <p className="text-sm text-[color:var(--text-muted)]">
             Detecting patterns in task avoidance and delays
@@ -255,8 +212,6 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
           ))}
         </CardContent>
       </Card>
-
-      {/* Weekly Pattern Chart */}
       <Card>
         <CardHeader>
           <CardTitle>Weekly Pattern Analysis</CardTitle>
@@ -266,8 +221,7 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
             {radarData.patterns.map((pattern) => {
               const totalActivity =
                 pattern.avgSnoozeCount + pattern.avgRescheduleCount;
-              const intensity = Math.min(totalActivity / 5, 1); // 0-1 scale
-
+              const intensity = Math.min(totalActivity / 5, 1);
               return (
                 <div key={pattern.dayOfWeek} className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -305,8 +259,6 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Top Procrastinated Tasks */}
       {radarData.topProblems.length > 0 && (
         <Card>
           <CardHeader>
@@ -320,10 +272,9 @@ const ProcrastinationRadar: React.FC<ProcrastinationRadarProps> = ({
               {radarData.topProblems.map((problem, idx) => {
                 const task = problem.task;
                 const age = Math.floor(
-                  (new Date().getTime() - new Date(task.createdAt).getTime()) /
+                  (Date.now() - new Date(task.createdAt).getTime()) /
                     (1000 * 60 * 60 * 24)
                 );
-
                 return (
                   <div
                     key={task.id}

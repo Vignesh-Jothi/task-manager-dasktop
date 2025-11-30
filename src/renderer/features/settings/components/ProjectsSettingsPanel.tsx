@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Project } from "../../types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Project } from "../../../../types";
 
 const ProjectsSettingsPanel: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);

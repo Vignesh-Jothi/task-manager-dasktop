@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { MissionStats } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
+import { MissionStats } from "@types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Badge } from "@ui/badge";
 
 interface MissionStatsDisplayProps {
   stats: MissionStats;
@@ -10,23 +10,12 @@ interface MissionStatsDisplayProps {
 const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
   const [level, setLevel] = useState(1);
   const [progress, setProgress] = useState(0);
-
   useEffect(() => {
     calculateLevel();
   }, [stats.totalXP]);
-
   const calculateLevel = () => {
-    // Level formula: level = floor(sqrt(XP / 100))
-    // This means:
-    // Level 1: 0-99 XP
-    // Level 2: 100-399 XP
-    // Level 3: 400-899 XP
-    // Level 4: 900-1599 XP
-    // etc.
     const calculatedLevel = Math.floor(Math.sqrt(stats.totalXP / 100)) + 1;
     setLevel(calculatedLevel);
-
-    // Calculate progress to next level
     const xpForCurrentLevel = (calculatedLevel - 1) ** 2 * 100;
     const xpForNextLevel = calculatedLevel ** 2 * 100;
     const xpIntoCurrentLevel = stats.totalXP - xpForCurrentLevel;
@@ -34,7 +23,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
     const progressPercent = (xpIntoCurrentLevel / xpNeededForLevel) * 100;
     setProgress(Math.min(progressPercent, 100));
   };
-
   const getRankTitle = (level: number): string => {
     if (level >= 20) return "Interstellar Commander";
     if (level >= 15) return "Space Admiral";
@@ -46,7 +34,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
     if (level >= 2) return "Cadet";
     return "Rookie Astronaut";
   };
-
   const getRankEmoji = (level: number): string => {
     if (level >= 20) return "👑";
     if (level >= 15) return "⭐";
@@ -56,14 +43,12 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
     if (level >= 3) return "🚀";
     return "🧑‍🚀";
   };
-
   const getStabilityColor = (score: number): string => {
     if (score >= 80) return "var(--success)";
     if (score >= 60) return "var(--info)";
     if (score >= 40) return "var(--warning)";
     return "var(--error)";
   };
-
   const getStreakEmoji = (streak: number): string => {
     if (streak >= 30) return "🔥🔥🔥";
     if (streak >= 14) return "🔥🔥";
@@ -71,10 +56,8 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
     if (streak >= 3) return "⚡";
     return "✨";
   };
-
   return (
     <div className="space-y-6">
-      {/* Rank & Level Card */}
       <Card className="border-l-4 border-l-[var(--btn-primary)] bg-gradient-to-br from-[var(--btn-primary)]/5 to-transparent">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-4">
@@ -100,8 +83,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
               </div>
             </div>
           </div>
-
-          {/* Level Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-[color:var(--text-muted)]">
               <span>Progress to Level {level + 1}</span>
@@ -117,10 +98,7 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Current Streak */}
         <Card className="hover:shadow-lg transition-shadow">
           <CardContent className="pt-6">
             <div className="text-center">
@@ -141,8 +119,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Mission Stability */}
         <Card className="hover:shadow-lg transition-shadow">
           <CardContent className="pt-6">
             <div className="text-center">
@@ -172,8 +148,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Success Rate */}
         <Card className="hover:shadow-lg transition-shadow">
           <CardContent className="pt-6">
             <div className="text-center">
@@ -191,8 +165,6 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Longest Streak Record */}
       {stats.longestStreak > 0 && (
         <Card className="border border-[var(--warning)]/30 bg-gradient-to-r from-[var(--warning)]/5 to-transparent">
           <CardContent className="pt-4">
@@ -220,18 +192,14 @@ const MissionStatsDisplay: React.FC<MissionStatsDisplayProps> = ({ stats }) => {
           </CardContent>
         </Card>
       )}
-
-      {/* Achievements/Milestones */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <span className="text-xl">🎖️</span>
-            Mission Achievements
+            <span className="text-xl">🎖️</span>Mission Achievements
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {/* Achievement badges based on stats */}
             {stats.totalXP >= 1000 && (
               <div className="p-3 rounded-lg bg-[var(--bg-card)] border border-[var(--success)]/30 text-center">
                 <div className="text-2xl mb-1">⭐</div>

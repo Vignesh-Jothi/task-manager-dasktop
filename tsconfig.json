@@ -13,7 +13,15 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@features/*": ["src/renderer/features/*"],
+      "@ui/*": ["src/renderer/ui/primitives/*"],
+      "@app/*": ["src/renderer/app/*"],
+      "@types": ["src/shared/types/index.ts"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

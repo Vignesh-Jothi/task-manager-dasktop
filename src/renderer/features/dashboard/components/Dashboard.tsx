@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Task, MissionStats, Project } from "../../types";
-import TaskList from "./TaskList";
-import VirtualizedTaskList from "./VirtualizedTaskList";
-import DailyMissionBriefing from "./DailyMissionBriefing";
-import MissionMode from "./MissionMode";
-import ProcrastinationRadar from "./ProcrastinationRadar";
+import { Task, MissionStats, Project } from "@types";
+import {
+  TaskList,
+  VirtualizedTaskList,
+  DailyMissionBriefing,
+  MissionMode,
+  ProcrastinationRadar,
+} from "@features/tasks";
 import MissionStatsDisplay from "./MissionStatsDisplay";
-import "../styles/Dashboard.css";
-import "../styles/theme.css";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Select } from "./ui/select";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import "../../../styles/Dashboard.css";
+import "../../../styles/theme.css";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Badge } from "@ui/badge";
+import { Select } from "@ui/select";
+import { Input } from "@ui/input";
+import { Button } from "@ui/button";
 
 interface DashboardProps {
   tasks: Task[];
   loading: boolean;
   onTaskUpdate: () => void;
-  onCreateTask?: () => void; // optional callback to switch view
+  onCreateTask?: () => void;
 }
 
 type ViewMode = "today" | "week" | "month" | "queue";
@@ -63,17 +65,15 @@ const Dashboard: React.FC<DashboardProps> = ({
     searchQuery,
     projectFilter,
   ]);
-
   useEffect(() => {
-    const loadProjects = async () => {
+    (async () => {
       try {
         const items = await (window as any).api.getAllProjects();
         setProjects(items);
       } catch (err) {
         console.error("Failed to load projects", err);
       }
-    };
-    loadProjects();
+    })();
   }, []);
 
   const checkDailyBriefing = () => {
@@ -84,20 +84,16 @@ const Dashboard: React.FC<DashboardProps> = ({
       localStorage.setItem("lastBriefingDate", today);
     }
   };
-
   const calculateMissionStats = () => {
     const completedTasks = tasks.filter((t) => t.status === "completed");
     const totalXP = completedTasks.reduce(
       (sum, t) => sum + (t.xpValue || 10),
       0
     );
-
-    // Calculate streak
-    let currentStreak = 0;
-    let longestStreak = 0;
-    let tempStreak = 0;
+    let currentStreak = 0,
+      longestStreak = 0,
+      tempStreak = 0;
     const today = new Date();
-
     for (let i = 0; i < 365; i++) {
       const checkDate = new Date(today);
       checkDate.setDate(today.getDate() - i);
@@ -105,7 +101,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       const hasTaskOnDate = completedTasks.some((t) =>
         t.completedAt?.startsWith(dateStr)
       );
-
       if (hasTaskOnDate) {
         tempStreak++;
         if (i === 0 || currentStreak > 0) currentStreak++;
@@ -115,25 +110,18 @@ const Dashboard: React.FC<DashboardProps> = ({
         tempStreak = 0;
       }
     }
-
-    // Success rate
-    const totalTasks = tasks.length;
     const successRate =
-      totalTasks > 0 ? (completedTasks.length / totalTasks) * 100 : 0;
-
+      tasks.length > 0 ? (completedTasks.length / tasks.length) * 100 : 0;
     setMissionStats({
       totalXP,
       currentStreak,
       longestStreak: Math.max(longestStreak, tempStreak),
-      weeklyStability: 75, // Could calculate based on consistency
+      weeklyStability: 75,
       missionSuccessRate: successRate,
     });
   };
-
   const filterTasks = async () => {
     let filtered = [...tasks];
-
-    // View mode filter
     if (viewMode === "today") {
       const today = new Date().toISOString().split("T")[0];
       filtered = filtered.filter(
@@ -155,18 +143,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       const queue = await window.api.getPriorityQueue();
       filtered = queue;
     }
-
-    // Status filter
-    if (filterStatus !== "all") {
+    if (filterStatus !== "all")
       filtered = filtered.filter((task) => task.status === filterStatus);
-    }
-
-    // Priority filter
-    if (filterPriority !== "all") {
+    if (filterPriority !== "all")
       filtered = filtered.filter((task) => task.priority === filterPriority);
-    }
-
-    // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -175,12 +155,8 @@ const Dashboard: React.FC<DashboardProps> = ({
           task.description.toLowerCase().includes(query)
       );
     }
-
-    // Project filter
-    if (projectFilter !== "all") {
+    if (projectFilter !== "all")
       filtered = filtered.filter((t) => t.projectId === projectFilter);
-    }
-
     setFilteredTasks(filtered);
   };
 
@@ -192,7 +168,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     missed: tasks.filter((t) => t.status === "missed").length,
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="space-y-6 animate-fade-in" aria-busy="true">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -213,9 +189,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
     );
-  }
-
-  if (!loading && tasks.length === 0) {
+  if (!loading && tasks.length === 0)
     return (
       <div className="flex flex-col items-center justify-center h-full py-16 text-center animate-fade-in">
         <div className="w-40 h-40 rounded-full bg-[var(--bg-card)] flex items-center justify-center shadow-inner mb-8 relative overflow-hidden">
@@ -236,23 +210,18 @@ const Dashboard: React.FC<DashboardProps> = ({
         )}
       </div>
     );
-  }
 
   return (
     <div className="dashboard space-y-6">
-      {/* Daily Mission Briefing Modal */}
       {showDailyBriefing && (
         <DailyMissionBriefing
           tasks={tasks}
           onTaskClick={(task) => {
             setShowDailyBriefing(false);
-            // Could navigate to task or start mission mode
           }}
           onDismiss={() => setShowDailyBriefing(false)}
         />
       )}
-
-      {/* Mission Mode Overlay */}
       {missionModeTask && (
         <MissionMode
           task={missionModeTask}
@@ -263,12 +232,9 @@ const Dashboard: React.FC<DashboardProps> = ({
           onExit={() => setMissionModeTask(null)}
         />
       )}
-
-      {/* Header with Mission Control Button */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-[color:var(--text-primary)] flex items-center gap-3">
-          <span className="text-4xl">🚀</span>
-          Mission Control
+          <span className="text-4xl">🚀</span>Mission Control
         </h1>
         <Button
           onClick={() => setShowDailyBriefing(true)}
@@ -278,8 +244,6 @@ const Dashboard: React.FC<DashboardProps> = ({
           📡 Daily Briefing
         </Button>
       </div>
-
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card className="border-l-4 border-l-[var(--text-muted)] hover:shadow-lg transition-all duration-300 animate-fade-in">
           <CardContent className="pt-4">
@@ -357,12 +321,9 @@ const Dashboard: React.FC<DashboardProps> = ({
           </CardContent>
         </Card>
       </div>
-
-      {/* Filters & View Controls */}
       <Card>
         <CardContent className="pt-4">
           <div className="flex flex-col gap-4">
-            {/* Tab Navigation */}
             <div className="flex gap-2 border-b border-[color:var(--text-muted)]/20 pb-2">
               <Button
                 variant={activeTab === "tasks" ? undefined : "outline"}
@@ -386,11 +347,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                 📊 Stats
               </Button>
             </div>
-
-            {/* Only show filters on tasks tab */}
             {activeTab === "tasks" && (
               <div className="flex flex-col lg:flex-row gap-4">
-                {/* View Mode Buttons */}
                 <div className="flex gap-2 flex-wrap">
                   <Button
                     variant={viewMode === "today" ? undefined : "outline"}
@@ -425,8 +383,6 @@ const Dashboard: React.FC<DashboardProps> = ({
                     🎯 Priority Queue
                   </Button>
                 </div>
-
-                {/* Filters */}
                 <div className="flex gap-2 flex-wrap lg:ml-auto">
                   <Select
                     value={filterStatus}
@@ -477,24 +433,16 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Content based on active tab */}
-      {activeTab === "tasks" && (
-        <>
-          {/* Task List */}
-          {filteredTasks.length > 100 ? (
-            <VirtualizedTaskList
-              tasks={filteredTasks}
-              onTaskUpdate={onTaskUpdate}
-            />
-          ) : (
-            <TaskList tasks={filteredTasks} onTaskUpdate={onTaskUpdate} />
-          )}
-        </>
-      )}
-
+      {activeTab === "tasks" &&
+        (filteredTasks.length > 100 ? (
+          <VirtualizedTaskList
+            tasks={filteredTasks}
+            onTaskUpdate={onTaskUpdate}
+          />
+        ) : (
+          <TaskList tasks={filteredTasks} onTaskUpdate={onTaskUpdate} />
+        ))}
       {activeTab === "radar" && <ProcrastinationRadar tasks={tasks} />}
-
       {activeTab === "stats" && <MissionStatsDisplay stats={missionStats} />}
     </div>
   );

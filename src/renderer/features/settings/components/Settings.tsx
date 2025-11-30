@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import "../styles/Settings.css";
-import "../styles/theme.css";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Select } from "./ui/select";
-import { Switch } from "./ui/switch";
+import "../../../styles/Settings.css";
+import "../../../styles/theme.css";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Select } from "@ui/select";
+import { Switch } from "@ui/switch";
 import ProjectsSettingsPanel from "./ProjectsSettingsPanel";
+import { ThemeCustomizer } from "@features/themes";
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    "jira" | "github" | "data" | "reports" | "features" | "projects"
+    "jira" | "github" | "data" | "reports" | "features" | "projects" | "theme"
   >("jira");
   // Email summary settings
   const [emailEnabled, setEmailEnabled] = useState(false);
@@ -188,10 +189,8 @@ const Settings: React.FC = () => {
       localStorage.clear();
       sessionStorage.clear();
 
-      // Show success message
       alert("Cache cleared successfully! The app will restart now.");
 
-      // Restart the application
       await window.api.relaunchApp();
     } catch (error) {
       console.error("Failed to clear cache:", error);
@@ -245,7 +244,6 @@ const Settings: React.FC = () => {
   const handleDeleteGitHubData = async () => {
     setIsDeleting(true);
     try {
-      // Clear GitHub settings
       await window.api.saveGitHubSettings({
         enabled: false,
         token: "",
@@ -385,27 +383,17 @@ const Settings: React.FC = () => {
             >
               🗂️ Projects
             </Button>
+            {/* <Button
+              variant={activeTab === "theme" ? "default" : "outline"}
+              onClick={() => setActiveTab("theme")}
+            >
+              🎨 Theme
+            </Button> */}
           </div>
         </CardContent>
       </Card>
 
-      {activeTab === "theme" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Theme Settings</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-[color:var(--text-secondary)] mb-6">
-              Customize your app appearance and enable automatic theme
-              switching.
-            </p>
-            <div className="space-y-6">
-              {/* Import ThemeProvider hook */}
-              <ThemeSection />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* {activeTab === "theme" && <ThemeCustomizer />} */}
 
       {activeTab === "jira" && (
         <Card>
@@ -615,7 +603,6 @@ const Settings: React.FC = () => {
 
       {activeTab === "data" && (
         <div className="space-y-4">
-          {/* Cache Management */}
           <Card>
             <CardHeader>
               <CardTitle>Cache Management</CardTitle>
@@ -631,7 +618,6 @@ const Settings: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Task Deletion */}
           <Card className="border-l-4 border-l-[var(--warning)]">
             <CardHeader>
               <CardTitle>Delete Tasks</CardTitle>
@@ -723,7 +709,6 @@ const Settings: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* GitHub Data Deletion */}
           <Card className="border-l-4 border-l-[var(--error)]">
             <CardHeader>
               <CardTitle>Delete Synced Data</CardTitle>
@@ -774,7 +759,6 @@ const Settings: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Warning Notice */}
           <Card className="bg-[var(--warning)]/10 border border-[var(--warning)]/30">
             <CardContent className="pt-4">
               <div className="flex gap-3">
@@ -938,7 +922,6 @@ const Settings: React.FC = () => {
               immediately.
             </p>
             <div className="space-y-6">
-              {/* Startup & UI Features */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
                   Startup & Interface
@@ -973,7 +956,6 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Automation Features */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
                   Automation & Notifications
@@ -1010,7 +992,6 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Integration Features */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
                   Integrations
@@ -1047,7 +1028,6 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Performance Features */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[color:var(--text-primary)] uppercase tracking-wide">
                   Performance

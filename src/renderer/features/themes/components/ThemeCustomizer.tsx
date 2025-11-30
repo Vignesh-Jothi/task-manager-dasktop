@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Switch } from "./ui/switch";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Switch } from "@ui/switch";
 import { useTheme, CustomTheme } from "./ThemeProvider";
 
 export const ThemeCustomizer: React.FC = () => {
@@ -86,7 +86,6 @@ export const ThemeCustomizer: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Preset Themes Section */}
       <Card>
         <CardHeader>
           <CardTitle>Preset Themes</CardTitle>
@@ -119,7 +118,6 @@ export const ThemeCustomizer: React.FC = () => {
               )}
             </div>
 
-            {/* Auto-switch toggle */}
             <div className="flex items-center justify-between p-4 bg-[var(--bg-sidebar)] rounded-lg hover:bg-[var(--bg-app)] transition-colors">
               <div className="flex-1">
                 <div className="font-medium text-[color:var(--text-primary)]">
@@ -136,7 +134,6 @@ export const ThemeCustomizer: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Custom Themes Section */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-[color:var(--text-primary)]">
           Custom Themes

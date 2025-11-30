@@ -8,113 +8,11 @@ Welcome, astronaut! Here's how to start using your mission control features:
 
 ## Day 1: Morning Briefing
 
-When you open Tasktronaut, you'll see:
+## Deprecated Root Document
 
-```
-┌─────────────────────────────────────────────────────┐
-│  📡 Daily Mission Briefing                          │
-│  November 30, 2025 - Saturday                       │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│  Mission Conditions: ☀️ Smooth                      │
-│  Clear skies ahead. Standard operations expected.   │
-│                                                      │
-│  ⚠️ Distress Signals (0)                            │
-│  No overdue tasks                                   │
-│                                                      │
-│  🎯 Priority Objectives                             │
-│  1. 🌌 Design new feature architecture              │
-│     Deep Space • ⏱️ 120m • 🔴 High Gravity         │
-│                                                      │
-│  2. 🛰️ Review pull requests                         │
-│     Mid Orbit • ⏱️ 45m                              │
-│                                                      │
-│  3. 🌍 Update documentation                         │
-│     Low Orbit • ⏱️ 20m                              │
-│                                                      │
-│  📋 Optional Side Quests (5)                        │
-│  • Organize files                                   │
-│  • Clean up notes                                   │
-│  • Update dependencies                              │
-│                                                      │
-│  💡 "One small step at a time, astronaut."          │
-│                                                      │
-│  [🚀 Begin Mission]  [Dismiss]                      │
-└─────────────────────────────────────────────────────┘
-```
+Quick start instructions moved to `docs/quick-start.md`.
 
----
-
-## Creating Tasks with Orbit Levels
-
-Instead of "Priority: High", you assign orbit levels:
-
-**🌍 Low Orbit** (Quick wins)
-- Duration: < 30 minutes
-- Examples: Quick email, simple bug fix, update README
-- Gravity: 10-30
-
-**🛰️ Mid Orbit** (Standard work)
-- Duration: 30-90 minutes  
-- Examples: Code review, write tests, meeting prep
-- Gravity: 30-60
-
-**🌌 Deep Space** (High-impact missions)
-- Duration: 2+ hours
-- Examples: Architecture design, complex features, hard problems
-- Gravity: 60-100
-
----
-
-## Entering Mission Mode
-
-When you need deep focus:
-
-```
-┌─────────────────────────────────────────────────────┐
-│                    🎯 Mission Mode                   │
-│         All distractions eliminated. Focus engaged.  │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│               Design Feature Architecture            │
-│       Build authentication flow with OAuth 2.0      │
-│                                                      │
-│                      01:23:45                        │
-│                  Target: 120 minutes                 │
-│                                                      │
-│  ████████████████████░░░░░░░░░░░░░  69%            │
-│                                                      │
-│  🌌 Deep Space • Gravity: 85 • 🕐 Dec 1             │
-│                                                      │
-│  [⏸️ Pause]          [✅ Complete Mission]          │
-│                                                      │
-│              [🚨 Abort Mission]                      │
-│                                                      │
-│  "One task. One moment. One mission at a time."     │
-└─────────────────────────────────────────────────────┘
-```
-
-**Stars twinkle in the background. No other tasks visible. Pure focus.**
-
----
-
-## Mission Success!
-
-When you complete:
-
-```
-┌─────────────────────────────────────────────────────┐
-│                                                      │
-│                        🎉                            │
-│                                                      │
-│              Mission Successful!                     │
-│                                                      │
-│          Launch completed in 1:45:32                 │
-│                                                      │
-│                    +40 XP                            │
-│                                                      │
-└─────────────────────────────────────────────────────┘
-
+Refer there for current onboarding guidance.
 *Particles explode outward. Brief celebration, then back to dashboard.*
 ```
 

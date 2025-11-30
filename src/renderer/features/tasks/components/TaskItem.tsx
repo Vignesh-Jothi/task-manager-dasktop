@@ -1,15 +1,14 @@
-// CLEAN FILE REWRITE
 import React, { useState } from "react";
-import { Task, TaskStatus, Priority, TaskType } from "../../types";
-import "../styles/TaskItem.css";
-import "../styles/theme.css";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Dialog } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Select } from "./ui/select";
+import { Task, TaskStatus, Priority, TaskType } from "@types";
+import "../../../styles/TaskItem.css";
+import "../../../styles/theme.css";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Badge } from "@ui/badge";
+import { Dialog } from "@ui/dialog";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Textarea } from "@ui/textarea";
+import { Select } from "@ui/select";
 
 interface TaskItemProps {
   task: Task;
@@ -178,6 +177,16 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskUpdate }) => {
                   }}
                 >
                   Delete
+                </Button>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStatusChange("completed");
+                  }}
+                  variant="outline"
+                  disabled={task.status === "completed"}
+                >
+                  Complete
                 </Button>
               </div>
             ) : (

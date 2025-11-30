@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Project } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Switch } from "./ui/switch";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Project } from "../../../../types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Switch } from "@ui/switch";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
 
 interface MissionControlSettings {
   enableDailyBriefing: boolean;
@@ -24,7 +24,7 @@ const MissionControlSettingsPanel: React.FC = () => {
     enableProcrastinationRadar: true,
     enableXPSystem: true,
     enableAbortMode: true,
-    enableAICopilot: false, // Future feature
+    enableAICopilot: false,
     missionModeBreakInterval: 25,
   });
 
@@ -41,13 +41,6 @@ const MissionControlSettingsPanel: React.FC = () => {
 
   const loadSettings = async () => {
     try {
-      // TODO: Implement getSettings API call
-      // const appSettings = await window.api.getSettings();
-      // if (appSettings.missionControl) {
-      //   setSettings(appSettings.missionControl);
-      // }
-
-      // For now, load from localStorage
       const saved = localStorage.getItem("missionControlSettings");
       if (saved) {
         setSettings(JSON.parse(saved));
@@ -77,15 +70,7 @@ const MissionControlSettingsPanel: React.FC = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // TODO: Implement updateSettings API call
-      // await window.api.updateSettings({
-      //   missionControl: settings,
-      // });
-
-      // For now, save to localStorage
       localStorage.setItem("missionControlSettings", JSON.stringify(settings));
-
-      // Show browser notification
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification("Settings Saved", {
           body: "Mission Control settings updated successfully",
@@ -149,7 +134,6 @@ const MissionControlSettingsPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <Card className="border-l-4 border-l-[var(--btn-primary)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
@@ -162,7 +146,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardHeader>
       </Card>
 
-      {/* Core Features */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Core Features</CardTitle>
@@ -194,7 +177,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Analytics & Progression */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Analytics & Progression</CardTitle>
@@ -218,7 +200,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Emergency & Advanced */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Emergency & Advanced</CardTitle>
@@ -243,7 +224,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Projects Management */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Projects</CardTitle>
@@ -311,7 +291,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Mission Mode Configuration */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Mission Mode Configuration</CardTitle>
@@ -338,7 +317,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Actions */}
       <div className="flex gap-3">
         <Button onClick={handleSave} disabled={isSaving} className="flex-1">
           {isSaving ? (
@@ -355,7 +333,6 @@ const MissionControlSettingsPanel: React.FC = () => {
         </Button>
       </div>
 
-      {/* Info Box */}
       <Card className="border border-[var(--info)]/30 bg-[var(--info)]/5">
         <CardContent className="pt-4">
           <div className="flex gap-3">
@@ -378,7 +355,6 @@ const MissionControlSettingsPanel: React.FC = () => {
   );
 };
 
-// Helper component for setting rows
 const SettingRow: React.FC<{
   icon: string;
   title: string;

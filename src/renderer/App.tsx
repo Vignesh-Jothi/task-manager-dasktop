@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Dashboard from "./components/Dashboard";
-import TaskForm from "./components/TaskForm";
-import Settings from "./components/Settings";
-import { Task } from "../types";
+import { Task } from "@types";
+import { Dashboard } from "@features/dashboard";
+import { TaskForm } from "@features/tasks";
+import { Settings } from "@features/settings";
+import LoadingSplash from "@app/LoadingSplash";
+import {
+  ThemeProvider,
+  useTheme,
+} from "@features/themes/components/ThemeProvider";
+import { ThemeCustomizer } from "@features/themes/components/ThemeCustomizer";
 import "./styles/App.css";
 import "./styles/theme.css";
-import { ThemeProvider, useTheme } from "./components/ThemeProvider";
-import { ThemeCustomizer } from "./components/ThemeCustomizer";
 import { Card, CardContent } from "./components/ui/card";
 import { Button } from "./components/ui/button";
-import LoadingSplash from "./components/LoadingSplash";
+// Removed legacy direct component import; using alias @app/LoadingSplash
 import { Tooltip } from "./components/ui/tooltip";
 
 type View = "dashboard" | "create" | "settings" | "themes";

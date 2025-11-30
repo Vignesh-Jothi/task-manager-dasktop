@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Task, DailyBriefing, OrbitLevel } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { Task, DailyBriefing, OrbitLevel } from "@types";
+import { Card, CardHeader, CardTitle, CardContent } from "@ui/card";
+import { Badge } from "@ui/badge";
+import { Button } from "@ui/button";
 
 interface DailyMissionBriefingProps {
   tasks: Task[];
@@ -28,15 +28,12 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
 }) => {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null);
   const [isVisible, setIsVisible] = useState(true);
-
   useEffect(() => {
     generateBriefing();
   }, [tasks]);
 
   const generateBriefing = () => {
     const today = new Date().toISOString().split("T")[0];
-
-    // Get overdue tasks
     const overdue = tasks.filter(
       (t) =>
         t.deadline &&
@@ -44,8 +41,6 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
         t.status !== "completed" &&
         t.status !== "missed"
     );
-
-    // Get today's tasks and high-priority items
     const todaysTasks = tasks.filter(
       (t) =>
         (t.deadline?.startsWith(today) ||
@@ -53,27 +48,20 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
           t.orbit?.level === "deep-space") &&
         t.status !== "completed"
     );
-
-    // Sort by gravity and orbit level
-    const prioritized = [...todaysTasks].sort((a, b) => {
+    const prioritized = [...todaysTasks].sort((a: Task, b: Task) => {
       const gravityA = a.gravity || 0;
       const gravityB = b.gravity || 0;
       if (gravityA !== gravityB) return gravityB - gravityA;
-
-      const orbitWeight = {
+      const orbitWeight: { [K in OrbitLevel]: number } = {
         "deep-space": 3,
         "mid-orbit": 2,
         "low-orbit": 1,
       };
-      const orbitA = a.orbit ? orbitWeight[a.orbit.level] : 0;
-      const orbitB = b.orbit ? orbitWeight[b.orbit.level] : 0;
+      const orbitA = a.orbit ? orbitWeight[a.orbit.level as OrbitLevel] : 0;
+      const orbitB = b.orbit ? orbitWeight[b.orbit.level as OrbitLevel] : 0;
       return orbitB - orbitA;
     });
-
-    // Top 3 priorities
     const topPriorities = prioritized.slice(0, 3);
-
-    // Optional quests (low-orbit, low-gravity)
     const optional = tasks
       .filter(
         (t) =>
@@ -82,8 +70,6 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
           (t.gravity || 0) < 30
       )
       .slice(0, 5);
-
-    // Calculate day difficulty
     const totalLoad = topPriorities.reduce(
       (sum, t) => sum + (t.durationMinutes || 30),
       0
@@ -94,12 +80,10 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
         : overdue.length > 2 || totalLoad > 240
         ? "turbulent"
         : "smooth";
-
     const randomQuote =
       MOTIVATIONAL_QUOTES[
         Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)
       ];
-
     setBriefing({
       date: today,
       topPriorities,
@@ -114,15 +98,9 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
     setIsVisible(false);
     setTimeout(onDismiss, 300);
   };
-
   if (!briefing || !isVisible) return null;
 
-  const weatherEmoji = {
-    smooth: "☀️",
-    turbulent: "⛈️",
-    critical: "🌪️",
-  };
-
+  const weatherEmoji = { smooth: "☀️", turbulent: "⛈️", critical: "🌪️" };
   const weatherColor = {
     smooth: "var(--success)",
     turbulent: "var(--warning)",
@@ -156,9 +134,7 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
             </button>
           </div>
         </CardHeader>
-
         <CardContent className="pt-6 space-y-6">
-          {/* Weather Forecast */}
           <div
             className="flex items-center gap-4 p-4 rounded-lg bg-[var(--bg-card)] border-2"
             style={{
@@ -192,13 +168,10 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
               </p>
             </div>
           </div>
-
-          {/* Overdue Warnings */}
           {briefing.overdueTasks.length > 0 && (
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-[color:var(--error)] flex items-center gap-2">
-                <span>⚠️</span>
-                Distress Signals ({briefing.overdueTasks.length})
+                <span>⚠️</span>Distress Signals ({briefing.overdueTasks.length})
               </h3>
               <div className="space-y-2">
                 {briefing.overdueTasks.slice(0, 5).map((task) => (
@@ -224,12 +197,9 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
               </div>
             </div>
           )}
-
-          {/* Top 3 Priorities */}
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
-              <span>🎯</span>
-              Priority Objectives
+              <span>🎯</span>Priority Objectives
             </h3>
             {briefing.topPriorities.length > 0 ? (
               <div className="space-y-3">
@@ -281,13 +251,10 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
               </p>
             )}
           </div>
-
-          {/* Optional Side Quests */}
           {briefing.optionalQuests.length > 0 && (
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
-                <span>📋</span>
-                Optional Side Quests
+                <span>📋</span>Optional Side Quests
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {briefing.optionalQuests.map((task) => (
@@ -304,8 +271,6 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
               </div>
             </div>
           )}
-
-          {/* Motivational Quote */}
           {briefing.motivationalQuote && (
             <div className="p-4 rounded-lg bg-gradient-to-br from-[var(--btn-primary)]/10 to-[var(--info)]/10 border border-[var(--btn-primary)]/20">
               <p className="text-center text-[color:var(--text-primary)] font-medium italic">
@@ -313,8 +278,6 @@ const DailyMissionBriefing: React.FC<DailyMissionBriefingProps> = ({
               </p>
             </div>
           )}
-
-          {/* Actions */}
           <div className="flex gap-3 pt-4">
             <Button onClick={handleClose} className="flex-1">
               🚀 Begin Mission
@@ -338,8 +301,8 @@ function getOrbitIcon(level: OrbitLevel): string {
     case "deep-space":
       return "🌌";
   }
+  return "";
 }
-
 function getOrbitLabel(level: OrbitLevel): string {
   switch (level) {
     case "low-orbit":
@@ -349,6 +312,7 @@ function getOrbitLabel(level: OrbitLevel): string {
     case "deep-space":
       return "Deep Space";
   }
+  return "";
 }
 
 export default DailyMissionBriefing;

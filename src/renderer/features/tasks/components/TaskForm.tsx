@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Priority, TaskType, Project } from "../../types";
-import { Button } from "./ui/button";
+import { Priority, TaskType, Project } from "@types";
+import { Button } from "@ui/button";
 import { Clock } from "lucide-react";
-import "../styles/TaskForm.css";
+import "../../../styles/TaskForm.css";
 
 interface TaskFormProps {
   onTaskCreated: () => void;
@@ -24,7 +24,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
       try {
         const items = await (window as any).api.getAllProjects();
         setProjects(items);
-        // Auto-select first or General
         const general = items.find(
           (p: Project) => p.name.toLowerCase() === "general"
         );
@@ -56,7 +55,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
         projectId || undefined
       );
 
-      // Optionally set durationMinutes if provided
       if (durationMinutes.trim()) {
         const mins = parseInt(durationMinutes, 10);
         if (!isNaN(mins) && mins > 0) {
@@ -64,15 +62,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
         }
       }
 
-      // Reset form
       setTitle("");
       setDescription("");
       setPriority("low");
       setType("daily");
       setDeadline("");
       setDurationMinutes("");
-      // keep project selection
-
       onTaskCreated();
     } catch (error) {
       console.error("Failed to create task:", error);
