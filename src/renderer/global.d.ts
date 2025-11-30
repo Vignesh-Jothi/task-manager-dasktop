@@ -9,7 +9,8 @@ declare global {
         description: string,
         priority: string,
         type: string,
-        deadline?: string
+        deadline?: string,
+        projectId?: string
       ) => Promise<any>;
       updateTask: (taskId: string, updates: any) => Promise<any>;
       completeTask: (taskId: string) => Promise<any>;
@@ -31,6 +32,12 @@ declare global {
       getNextTask: () => Promise<any>;
       searchTasks: (query: string) => Promise<any[]>;
       deleteTask: (taskId: string) => Promise<boolean>;
+      // Project operations
+      getAllProjects: () => Promise<any[]>;
+      createProject: (name: string, color?: string) => Promise<any>;
+      updateProject: (id: string, updates: any) => Promise<any>;
+      archiveProject: (id: string) => Promise<any>;
+      deleteProject: (id: string) => Promise<any>;
 
       // Logger operations
       getLogs: (date: string) => Promise<string[]>;

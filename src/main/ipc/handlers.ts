@@ -8,7 +8,7 @@ import { EmailService } from "../services/EmailService";
 import { SummaryService } from "../services/SummaryService";
 import { FeatureFlagService } from "../services/FeatureFlagService";
 import { NotificationService } from "../services/NotificationService";
-import { Priority, TaskType, TaskStatus, Task } from "../../types";
+import { Priority, TaskType, TaskStatus, Task, Project } from "../../types";
 
 interface Services {
   taskService: TaskService;
@@ -20,6 +20,7 @@ interface Services {
   emailService: EmailService;
   summaryService: SummaryService;
   featureFlagService: FeatureFlagService;
+  projectService: any; // ProjectService (avoid circular import typing issues)
 }
 
 export function setupIpcHandlers(services: Services): void {
@@ -33,6 +34,7 @@ export function setupIpcHandlers(services: Services): void {
     emailService,
     summaryService,
     featureFlagService,
+    projectService,
   } = services;
 
   // Task operations
@@ -44,14 +46,16 @@ export function setupIpcHandlers(services: Services): void {
       description: string,
       priority: Priority,
       type: TaskType,
-      deadline?: string
+      deadline?: string,
+      projectId?: string
     ) => {
       const task = taskService.createTask(
         title,
         description,
         priority,
         type,
-        deadline
+        deadline,
+        projectId
       );
 
       // Create Jira issue if enabled
@@ -284,5 +288,29 @@ export function setupIpcHandlers(services: Services): void {
     } catch (error) {
       throw error;
     }
+  });
+
+  // Project operations
+  ipcMain.handle("project:getAll", async () => {
+    return projectService.getAllProjects();
+  });
+
+  ipcMain.handle("project:create", async (_e, name: string, color?: string) => {
+    return projectService.createProject(name, color);
+  });
+
+  ipcMain.handle(
+    "project:update",
+    async (_e, id: string, updates: Partial<Project>) => {
+      return projectService.updateProject(id, updates);
+    }
+  );
+
+  ipcMain.handle("project:archive", async (_e, id: string) => {
+    return projectService.archiveProject(id);
+  });
+
+  ipcMain.handle("project:delete", async (_e, id: string) => {
+    return projectService.deleteProject(id);
   });
 }

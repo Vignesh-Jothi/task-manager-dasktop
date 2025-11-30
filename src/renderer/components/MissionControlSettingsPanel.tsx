@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Project } from "../../types";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Switch } from "./ui/switch";
 import { Button } from "./ui/button";
@@ -28,9 +29,14 @@ const MissionControlSettingsPanel: React.FC = () => {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newProjectColor, setNewProjectColor] = useState("#4f46e5");
+  const [isProjectSaving, setIsProjectSaving] = useState(false);
 
   useEffect(() => {
     loadSettings();
+    loadProjects();
   }, []);
 
   const loadSettings = async () => {
@@ -89,6 +95,42 @@ const MissionControlSettingsPanel: React.FC = () => {
       console.error("Failed to save settings:", error);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const loadProjects = async () => {
+    try {
+      const items = await (window as any).api.getAllProjects();
+      setProjects(items);
+    } catch (err) {
+      console.error("Failed to load projects", err);
+    }
+  };
+
+  const handleCreateProject = async () => {
+    if (!newProjectName.trim()) return;
+    setIsProjectSaving(true);
+    try {
+      await (window as any).api.createProject(
+        newProjectName.trim(),
+        newProjectColor
+      );
+      setNewProjectName("");
+      await loadProjects();
+    } catch (err) {
+      console.error("Failed to create project", err);
+    } finally {
+      setIsProjectSaving(false);
+    }
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    if (!confirm("Delete this project? Tasks will retain reference.")) return;
+    try {
+      await (window as any).api.deleteProject(id);
+      await loadProjects();
+    } catch (err) {
+      console.error("Failed to delete project", err);
     }
   };
 
@@ -198,6 +240,74 @@ const MissionControlSettingsPanel: React.FC = () => {
             onToggle={() => handleToggle("enableAICopilot")}
             disabled={true}
           />
+        </CardContent>
+      </Card>
+
+      {/* Projects Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Projects</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-end gap-3">
+            <div className="flex-1 space-y-2">
+              <label className="text-sm font-medium">New Project Name</label>
+              <Input
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                placeholder="e.g. Marketing Launch"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Color</label>
+              <Input
+                type="color"
+                value={newProjectColor}
+                onChange={(e) => setNewProjectColor(e.target.value)}
+                className="h-10 w-16 p-1"
+              />
+            </div>
+            <Button onClick={handleCreateProject} disabled={isProjectSaving}>
+              {isProjectSaving ? "Saving..." : "Add"}
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {projects.length === 0 && (
+              <p className="text-sm text-[color:var(--text-muted)]">
+                No projects yet.
+              </p>
+            )}
+            {projects.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center justify-between px-3 py-2 rounded border border-[color:var(--text-muted)]/20"
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className="inline-block h-4 w-4 rounded"
+                    style={{ background: p.color || "#4f46e5" }}
+                  />
+                  <span className="text-sm">
+                    {p.name}
+                    {p.archived && (
+                      <span className="ml-2 text-xs text-[color:var(--text-muted)]">
+                        (Archived)
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleDeleteProject(p.id)}
+                    className="text-xs px-2 py-1"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 

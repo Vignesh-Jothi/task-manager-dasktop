@@ -20,7 +20,8 @@ export class TaskService {
     description: string,
     priority: Priority,
     type: TaskType,
-    deadline?: string
+    deadline?: string,
+    projectId?: string
   ): Task {
     const task: Task = {
       id: uuidv4(),
@@ -30,6 +31,7 @@ export class TaskService {
       status: "pending",
       type,
       deadline,
+      projectId,
       createdAt: new Date().toISOString(),
     };
 

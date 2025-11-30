@@ -38,6 +38,7 @@ export interface Task {
   blueprintId?: string; // if spawned from template
   missionMode?: boolean; // currently in focus mode
   abortProtected?: boolean; // survives "Abort Mission" mode
+  projectId?: string; // associated project (optional)
 }
 
 export interface TaskLog {
@@ -144,5 +145,19 @@ export interface CopilotSuggestion {
 
 export interface TaskIndex {
   tasks: { [id: string]: Task };
+  lastUpdated: string;
+}
+
+// Projects
+export interface Project {
+  id: string;
+  name: string;
+  color?: string; // optional accent color
+  createdAt: string;
+  archived?: boolean;
+}
+
+export interface ProjectIndex {
+  projects: { [id: string]: Project };
   lastUpdated: string;
 }

@@ -6,10 +6,11 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Select } from "./ui/select";
 import { Switch } from "./ui/switch";
+import ProjectsSettingsPanel from "./ProjectsSettingsPanel";
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    "jira" | "github" | "data" | "reports" | "features"
+    "jira" | "github" | "data" | "reports" | "features" | "projects"
   >("jira");
   // Email summary settings
   const [emailEnabled, setEmailEnabled] = useState(false);
@@ -377,6 +378,12 @@ const Settings: React.FC = () => {
               onClick={() => setActiveTab("features")}
             >
               🧩 Feature Flags
+            </Button>
+            <Button
+              variant={activeTab === "projects" ? "default" : "outline"}
+              onClick={() => setActiveTab("projects")}
+            >
+              🗂️ Projects
             </Button>
           </div>
         </CardContent>
@@ -1089,6 +1096,7 @@ const Settings: React.FC = () => {
           </CardContent>
         </Card>
       )}
+      {activeTab === "projects" && <ProjectsSettingsPanel />}
     </div>
   );
 };

@@ -90,6 +90,7 @@ export class FileSystemService {
 **Created:** ${task.createdAt}  
 **Completed:** ${task.completedAt || "Not completed"}  
 ${task.jiraIssueKey ? `**Jira:** ${task.jiraIssueKey}` : ""}
+${task.projectId ? `**Project:** ${task.projectId}` : ""}
 
 ### Description
 ${task.description}`;

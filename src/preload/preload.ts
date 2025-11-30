@@ -9,7 +9,8 @@ contextBridge.exposeInMainWorld("api", {
     description: string,
     priority: string,
     type: string,
-    deadline?: string
+    deadline?: string,
+    projectId?: string
   ) =>
     ipcRenderer.invoke(
       "task:create",
@@ -17,7 +18,8 @@ contextBridge.exposeInMainWorld("api", {
       description,
       priority,
       type,
-      deadline
+      deadline,
+      projectId
     ),
 
   updateTask: (taskId: string, updates: any) =>
@@ -108,4 +110,13 @@ contextBridge.exposeInMainWorld("api", {
   ) => {
     ipcRenderer.on("notification", (_, notification) => callback(notification));
   },
+
+  // Project operations
+  getAllProjects: () => ipcRenderer.invoke("project:getAll"),
+  createProject: (name: string, color?: string) =>
+    ipcRenderer.invoke("project:create", name, color),
+  updateProject: (id: string, updates: any) =>
+    ipcRenderer.invoke("project:update", id, updates),
+  archiveProject: (id: string) => ipcRenderer.invoke("project:archive", id),
+  deleteProject: (id: string) => ipcRenderer.invoke("project:delete", id),
 });

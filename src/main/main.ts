@@ -12,6 +12,7 @@ import { JiraService } from "./services/JiraService";
 import { GitHubService } from "./services/GitHubService";
 import { EncryptionService } from "./services/EncryptionService";
 import { setupIpcHandlers } from "./ipc/handlers";
+import { ProjectService } from "./services/ProjectService";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -24,6 +25,7 @@ const fileSystemService = new FileSystemService(dataDir, configDir);
 const loggerService = new LoggerService(logsDir);
 const encryptionService = new EncryptionService();
 const taskService = new TaskService(fileSystemService, loggerService);
+const projectService = new ProjectService(fileSystemService);
 const notificationService = new NotificationService(mainWindow);
 const jiraService = new JiraService(encryptionService, configDir);
 const githubService = new GitHubService(
@@ -95,6 +97,7 @@ app.whenReady().then(async () => {
   // Initialize services
   fileSystemService.initialize();
   loggerService.initialize();
+  projectService.initialize();
 
   // Setup IPC handlers
   setupIpcHandlers({
@@ -107,6 +110,7 @@ app.whenReady().then(async () => {
     emailService,
     summaryService,
     featureFlagService,
+    projectService,
   });
 
   // Start scheduler

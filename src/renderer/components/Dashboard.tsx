@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Task, MissionStats } from "../../types";
+import { Task, MissionStats, Project } from "../../types";
 import TaskList from "./TaskList";
 import VirtualizedTaskList from "./VirtualizedTaskList";
 import DailyMissionBriefing from "./DailyMissionBriefing";
@@ -48,12 +48,33 @@ const Dashboard: React.FC<DashboardProps> = ({
     weeklyStability: 75,
     missionSuccessRate: 0,
   });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectFilter, setProjectFilter] = useState<string>("all");
 
   useEffect(() => {
     filterTasks();
     calculateMissionStats();
     checkDailyBriefing();
-  }, [tasks, viewMode, filterStatus, filterPriority, searchQuery]);
+  }, [
+    tasks,
+    viewMode,
+    filterStatus,
+    filterPriority,
+    searchQuery,
+    projectFilter,
+  ]);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const items = await (window as any).api.getAllProjects();
+        setProjects(items);
+      } catch (err) {
+        console.error("Failed to load projects", err);
+      }
+    };
+    loadProjects();
+  }, []);
 
   const checkDailyBriefing = () => {
     const lastShown = localStorage.getItem("lastBriefingDate");
@@ -153,6 +174,11 @@ const Dashboard: React.FC<DashboardProps> = ({
           task.title.toLowerCase().includes(query) ||
           task.description.toLowerCase().includes(query)
       );
+    }
+
+    // Project filter
+    if (projectFilter !== "all") {
+      filtered = filtered.filter((t) => t.projectId === projectFilter);
     }
 
     setFilteredTasks(filtered);
@@ -426,6 +452,18 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <option value="higher">Higher</option>
                     <option value="high">High</option>
                     <option value="low">Low</option>
+                  </Select>
+                  <Select
+                    value={projectFilter}
+                    onChange={(e) => setProjectFilter(e.target.value)}
+                    className="text-sm"
+                  >
+                    <option value="all">All Projects</option>
+                    {projects.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
                   </Select>
                   <Input
                     placeholder="🔍 Search tasks..."

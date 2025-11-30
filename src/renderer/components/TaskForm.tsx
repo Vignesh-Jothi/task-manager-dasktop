@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Priority, TaskType } from "../../types";
+import React, { useState, useEffect } from "react";
+import { Priority, TaskType, Project } from "../../types";
 import { Button } from "./ui/button";
 import { Clock } from "lucide-react";
 import "../styles/TaskForm.css";
@@ -16,6 +16,26 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
   const [deadline, setDeadline] = useState("");
   const [durationMinutes, setDurationMinutes] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectId, setProjectId] = useState<string>("");
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const items = await (window as any).api.getAllProjects();
+        setProjects(items);
+        // Auto-select first or General
+        const general = items.find(
+          (p: Project) => p.name.toLowerCase() === "general"
+        );
+        if (general) setProjectId(general.id);
+        else if (items.length) setProjectId(items[0].id);
+      } catch (err) {
+        console.error("Failed to load projects", err);
+      }
+    };
+    loadProjects();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,12 +47,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
 
     setIsSubmitting(true);
     try {
-      const task = await window.api.createTask(
+      const task = await (window as any).api.createTask(
         title,
         description,
         priority,
         type,
-        deadline || undefined
+        deadline || undefined,
+        projectId || undefined
       );
 
       // Optionally set durationMinutes if provided
@@ -50,6 +71,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
       setType("daily");
       setDeadline("");
       setDurationMinutes("");
+      // keep project selection
 
       onTaskCreated();
     } catch (error) {
@@ -74,6 +96,24 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
             placeholder="Enter task title"
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="project">Project</label>
+          <select
+            id="project"
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
+            disabled={!projects.length}
+          >
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+                {p.archived ? " (Archived)" : ""}
+              </option>
+            ))}
+            {!projects.length && <option value="">No projects</option>}
+          </select>
         </div>
 
         <div className="form-group">
