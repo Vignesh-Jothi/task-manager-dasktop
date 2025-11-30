@@ -1,19 +1,21 @@
-# Tasktronaut
+# 🚀 Tasktronaut
 
-> One Small Task for You, One Giant Leap for Productivity
+> Mission Control for Your Life — Navigate Tasks Like an Astronaut
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)
 
 ## 📖 Table of Contents
 
 - [Overview](#overview)
+- [🎯 Mission Control Features (NEW)](#mission-control-features)
 - [Key Features](#key-features)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Core Features](#core-features)
   - [Task Management](#task-management)
+  - [Mission Control System](#mission-control-system)
   - [Theming System](#theming-system)
   - [Email Summaries](#email-summaries)
   - [Integrations](#integrations)
@@ -30,7 +32,7 @@
 
 ## Overview
 
-Tasktronaut is a **local-first**, **privacy-focused** desktop application for managing tasks with intelligent prioritization, deadline tracking, and seamless integrations. Built on Electron, it provides a native desktop experience with offline-first capabilities, automatic backups, and customizable themes.
+Tasktronaut is a **local-first**, **privacy-focused** desktop application that transforms task management into mission control. Instead of boring checklists, you're piloting through cognitive space with orbit levels, mission briefings, focus modes, and intelligent pattern detection.
 
 ### Why Tasktronaut?
 
@@ -40,14 +42,70 @@ Tasktronaut is a **local-first**, **privacy-focused** desktop application for ma
 - **🔄 Smart Sync**: Optional GitHub backup and Jira integration
 - **📧 Automated Reports**: Daily, weekly, and monthly email summaries
 - **🚀 Performance Optimized**: Virtual scrolling for thousands of tasks
-- **🎯 Priority Queue**: Intelligent task prioritization system
+- **🎯 Mission Control**: Orbit levels, XP progression, focus modes, and more
+
+---
+
+## 🎯 Mission Control Features
+
+**NEW in v2.0!** Tasktronaut now features a complete mission-control experience:
+
+### 📡 Daily Mission Briefing
+Your morning command center showing:
+- Mission conditions (smooth/turbulent/critical)
+- Top 3 priority objectives
+- Overdue warnings
+- Optional side quests
+- Motivational mission quotes
+
+### 🌌 Orbit Levels (Replaces Simple Priorities)
+- **Low Orbit** 🌍: Quick wins, easy tasks
+- **Mid Orbit** 🛰️: Standard work
+- **Deep Space** 🌌: High-impact, complex missions
+
+### 🎮 Mission Mode (Focus Mode)
+Full-screen immersion for single-task focus with:
+- Animated background
+- Live mission timer
+- Zero distractions
+- Success animations + XP rewards
+
+### 📖 Captain's Log
+Auto-generated daily markdown logs of all completed missions with:
+- Mission timestamps
+- Duration tracking
+- Mood/status notes
+- Searchable history
+
+### 📡 Procrastination Radar
+Pattern detection without judgment:
+- Weekly avoidance patterns
+- Day-of-week insights
+- Top procrastinated tasks
+- Actionable suggestions
+
+### ⭐ XP Progression System
+Earn experience points and rank up:
+- Rookie Astronaut → Interstellar Commander
+- Streak tracking
+- Mission success rate
+- Weekly stability score
+
+### 🚨 Abort Mission Mode
+Emergency protocol when overwhelmed:
+- Hides non-critical tasks
+- Shows only urgent/protected missions
+- Adaptive productivity, not punitive
+
+**[📚 Read the full Mission Control Guide →](./MISSION_CONTROL.md)**
 
 ---
 
 ## Key Features
 
 ### ✅ Task Management
-- **Priority Levels**: Low, High, Higher with visual indicators
+- **Orbit Levels**: Low-orbit, Mid-orbit, Deep-space with visual indicators
+- **Gravity System**: Dynamic priority weighting (0-100)
 - **Task Types**: Daily, Weekly, Monthly organization
 - **Status Tracking**: Pending, In Progress, Completed, Missed
 - **Deadline Management**: Set deadlines with automatic notifications
