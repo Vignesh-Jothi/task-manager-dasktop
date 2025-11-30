@@ -8,7 +8,7 @@ export class EncryptionService {
     // In production, this key should be derived from a user password or stored securely
     // For now, we'll use a machine-specific key
     const keyString =
-      process.env.ENCRYPTION_KEY || "task-manager-default-key-change-me";
+      process.env.ENCRYPTION_KEY || "tasktronaut-default-key-change-me";
     this.key = crypto.scryptSync(keyString, "salt", 32);
   }
 

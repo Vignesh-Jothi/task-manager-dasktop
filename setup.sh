@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Task Manager - Setup Script
-# This script helps you set up and run the Task Manager application
+# Tasktronaut - Setup Script
+# This script helps you set up and run the Tasktronaut application
 
 set -e
 
 echo "╔════════════════════════════════════════════════════╗"
-echo "║   Task Manager - Local-First Task Management     ║"
+echo "║   Tasktronaut - Local-First Task Management     ║"
 echo "║   Production-Ready Desktop Application           ║"
 echo "╚════════════════════════════════════════════════════╝"
 echo ""
@@ -68,9 +68,9 @@ echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Get user data directory based on OS
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        USER_DATA="$HOME/Library/Application Support/task-manager"
+        USER_DATA="$HOME/Library/Application Support/tasktronaut"
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        USER_DATA="$HOME/.config/task-manager"
+        USER_DATA="$HOME/.config/tasktronaut"
     else
         echo "⚠️  Sample data setup not supported on this OS. Skipping..."
         USER_DATA=""
@@ -96,11 +96,11 @@ echo "╚═══════════════════════�
 echo ""
 echo "📍 Your data will be stored at:"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "   ~/Library/Application Support/task-manager/"
+    echo "   ~/Library/Application Support/tasktronaut/"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "   ~/.config/task-manager/"
+    echo "   ~/.config/tasktronaut/"
 else
-    echo "   %APPDATA%/task-manager/ (Windows)"
+    echo "   %APPDATA%/tasktronaut/ (Windows)"
 fi
 echo ""
 echo "🚀 To start the application:"
@@ -120,7 +120,7 @@ echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo ""
-    echo "🚀 Starting Task Manager..."
+    echo "🚀 Starting Tasktronaut..."
     echo ""
     npm start
 else

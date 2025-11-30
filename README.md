@@ -1,6 +1,6 @@
-# TaskManager
+# Tasktronaut
 
-> A powerful local-first task management desktop application built with Electron, React, and TypeScript
+> One Small Task for You, One Giant Leap for Productivity
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -30,9 +30,9 @@
 
 ## Overview
 
-TaskManager is a **local-first**, **privacy-focused** desktop application for managing tasks with intelligent prioritization, deadline tracking, and seamless integrations. Built on Electron, it provides a native desktop experience with offline-first capabilities, automatic backups, and customizable themes.
+Tasktronaut is a **local-first**, **privacy-focused** desktop application for managing tasks with intelligent prioritization, deadline tracking, and seamless integrations. Built on Electron, it provides a native desktop experience with offline-first capabilities, automatic backups, and customizable themes.
 
-### Why TaskManager?
+### Why Tasktronaut?
 
 - **🔒 Privacy First**: All data stored locally on your machine
 - **⚡ Offline Ready**: Works without internet connection
@@ -316,7 +316,7 @@ For Gmail, use App Password:
 1. Enable 2FA in Google Account
 2. Go to Security → App Passwords
 3. Generate password for "Mail"
-4. Use generated password in TaskManager
+4. Use generated password in Tasktronaut
 
 #### Summary Content
 
@@ -336,7 +336,7 @@ Each email includes:
 1. Create GitHub Personal Access Token:
    - Go to GitHub Settings → Developer Settings → Personal Access Tokens
    - Generate token with `repo` scope
-2. In TaskManager Settings → GitHub:
+2. In Tasktronaut Settings → GitHub:
    - Paste token
    - Enter repository (format: `username/repo-name`)
    - Enable auto-sync if desired
@@ -357,7 +357,7 @@ Each email includes:
 1. Get Jira API Token:
    - Go to Jira Account Settings → Security → API Tokens
    - Create API token
-2. In TaskManager Settings → Jira:
+2. In Tasktronaut Settings → Jira:
    - Enter Jira domain (e.g., `yourcompany.atlassian.net`)
    - Enter email associated with Jira account
    - Paste API token
@@ -366,10 +366,10 @@ Each email includes:
 3. Click "Save Settings"
 
 **How Sync Works:**
-- Creates Jira issues from TaskManager tasks
+- Creates Jira issues from Tasktronaut tasks
 - Updates issue status when task status changes
 - Links task to Jira issue via `jiraIssueKey`
-- Maps TaskManager status to Jira workflow
+- Maps Tasktronaut status to Jira workflow
 
 **Manual Sync:**
 Click "Sync to Jira" in Settings to sync immediately
@@ -812,19 +812,19 @@ The app uses `electron-builder` for packaging. Output goes to `release/` directo
 **macOS (.dmg, .app):**
 ```bash
 npm run package
-# Output: release/TaskManager-1.0.0.dmg
+# Output: release/Tasktronaut-1.0.0.dmg
 ```
 
 **Windows (.exe):**
 ```bash
 npm run package
-# Output: release/TaskManager Setup 1.0.0.exe
+# Output: release/Tasktronaut Setup 1.0.0.exe
 ```
 
 **Linux (.AppImage):**
 ```bash
 npm run package
-# Output: release/TaskManager-1.0.0.AppImage
+# Output: release/Tasktronaut-1.0.0.AppImage
 ```
 
 ### Icon Generation
@@ -848,7 +848,7 @@ Edit `package.json` → `build` section:
 {
   "build": {
     "appId": "com.taskmanager.app",
-    "productName": "TaskManager",
+    "productName": "Tasktronaut",
     "mac": {
       "category": "public.app-category.productivity"
     },
@@ -1010,7 +1010,7 @@ Edit `package.json` → `build` section:
 
 MIT License
 
-Copyright (c) 2024 TaskManager
+Copyright (c) 2024 Tasktronaut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

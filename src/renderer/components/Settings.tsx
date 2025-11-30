@@ -382,6 +382,24 @@ const Settings: React.FC = () => {
         </CardContent>
       </Card>
 
+      {activeTab === "theme" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Theme Settings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-[color:var(--text-secondary)] mb-6">
+              Customize your app appearance and enable automatic theme
+              switching.
+            </p>
+            <div className="space-y-6">
+              {/* Import ThemeProvider hook */}
+              <ThemeSection />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {activeTab === "jira" && (
         <Card>
           <CardHeader>

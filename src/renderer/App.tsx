@@ -71,7 +71,7 @@ const App: React.FC = () => {
     }
 
     // Set title and favicon
-    document.title = "Task Manager";
+    document.title = "Tasktronaut";
     const link = document.querySelector<HTMLLinkElement>("link[rel='icon']");
     if (link) {
       link.href = "/assets/icon.svg";
@@ -141,11 +141,11 @@ const App: React.FC = () => {
           <div className="flex items-center justify-between">
             {!sidebarCollapsed && (
               <h1 className="text-xl font-bold text-[color:var(--text-primary)] flex items-center gap-2">
-                <span>📋</span>
-                <span>Task Manager</span>
+                <span>🚀</span>
+                <span>Tasktronaut</span>
               </h1>
             )}
-            {sidebarCollapsed && <span className="text-2xl mx-auto">📋</span>}
+            {sidebarCollapsed && <span className="text-2xl mx-auto">🚀</span>}
             <Tooltip
               disabled={featureFlags ? !featureFlags.enableTooltips : false}
               content={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -191,8 +191,6 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <ThemeToolbar />
-
         <div className="flex-1 overflow-auto p-6">
           {loading && currentView === "dashboard" ? (
             <div className="flex items-center justify-center h-full animate-fade-in">
@@ -275,67 +273,6 @@ const QuickStats: React.FC<{ tasks: Task[]; collapsed: boolean }> = ({
             {stats.inProgress}
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const ThemeToolbar: React.FC = () => {
-  const { theme, setTheme, autoSwitch, setAutoSwitch, activeCustomTheme } =
-    useTheme();
-
-  const presetThemes = [
-    { value: "calm", label: "Calm Focus", color: "#2563EB" },
-    { value: "dark", label: "Modern Dark", color: "#3B82F6" },
-    { value: "warm", label: "Warm", color: "#EA580C" },
-    { value: "mono", label: "Monochrome", color: "#0EA5E9" },
-    { value: "ocean", label: "Ocean", color: "#0284C7" },
-    { value: "sunset", label: "Sunset", color: "#F97316" },
-    { value: "forest", label: "Forest", color: "#10B981" },
-    { value: "midnight", label: "Midnight", color: "#6366F1" },
-    { value: "lavender", label: "Lavender", color: "#9333EA" },
-  ];
-
-  return (
-    <div className="bg-[var(--bg-card)] border-b border-[color:var(--text-muted)]/20 px-6 py-3">
-      <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-sm font-medium text-[color:var(--text-secondary)]">
-          Theme:
-        </span>
-        <div className="flex gap-2 flex-wrap">
-          {presetThemes.map((t) => (
-            <button
-              key={t.value}
-              onClick={() => setTheme(t.value as any)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                theme === t.value && !activeCustomTheme
-                  ? "bg-[var(--btn-primary)] text-white shadow-md"
-                  : "bg-[var(--bg-sidebar)] text-[color:var(--text-primary)] hover:bg-[var(--bg-app)]"
-              }`}
-              style={
-                theme === t.value && !activeCustomTheme
-                  ? { backgroundColor: t.color }
-                  : {}
-              }
-            >
-              {t.label}
-            </button>
-          ))}
-          {activeCustomTheme && theme === "custom" && (
-            <button className="px-3 py-1.5 rounded-md text-xs font-medium bg-[var(--btn-primary)] text-white shadow-md">
-              {activeCustomTheme.name}
-            </button>
-          )}
-        </div>
-        <label className="ml-auto flex items-center gap-2 text-sm text-[color:var(--text-secondary)]">
-          <input
-            type="checkbox"
-            checked={autoSwitch}
-            onChange={(e) => setAutoSwitch(e.target.checked)}
-            className="rounded"
-          />
-          Auto-switch (day/night)
-        </label>
       </div>
     </div>
   );

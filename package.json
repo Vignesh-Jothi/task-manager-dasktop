@@ -1,7 +1,7 @@
 {
-  "name": "task-manager",
+  "name": "tasktronaut",
   "version": "1.0.0",
-  "description": "Local-first task management application with priority queue and smart notifications",
+  "description": "One Small Task for You, One Giant Leap for Productivity",
   "main": "dist/main/main/main.js",
   "scripts": {
     "start": "electron .",
@@ -17,12 +17,12 @@
     "app": "npm run build && electron ."
   },
   "keywords": [
-    "task-manager",
+    "tasktronaut",
     "local-first",
     "priority-queue",
     "offline"
   ],
-  "author": "Task Manager",
+  "author": "Tasktronaut",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.19.25",
@@ -60,8 +60,8 @@
     "uuid": "^9.0.1"
   },
   "build": {
-    "appId": "com.taskmanager.app",
-    "productName": "TaskManager",
+    "appId": "com.tasktronaut.app",
+    "productName": "Tasktronaut",
     "directories": {
       "output": "release"
     },
